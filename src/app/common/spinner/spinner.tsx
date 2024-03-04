@@ -1,7 +1,7 @@
 import { CircularProgress } from '@nextui-org/react'
 import React from 'react'
 
-export const Spinner = () => {
+export const CommonSpinner = () => {
   const [value, setValue] = React.useState(0);
 
   React.useEffect(() => {
