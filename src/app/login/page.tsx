@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { LoginDefaultValue, LoginInterface } from './data/loginInterface'
 import { LoginRequest } from '../service'
 import { ResponseInterface } from '@/config/config'
-import { Spinner } from '../common/spinner'
+import { CreateAccount } from './components'
 
 export default function LoginPage() {
   // LOGIN DETAILS
@@ -13,6 +13,8 @@ export default function LoginPage() {
     useState<LoginInterface>(LoginDefaultValue)
 
   const [isInvalidInput, setInvalidInput] = useState<boolean>(false)
+
+  const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false)
 
   // PATH ROUTHER
   const router = useRouter()
@@ -26,7 +28,7 @@ export default function LoginPage() {
     // SET LOADING HERE
     LoginRequest(loginDetails)
       .then((response: ResponseInterface) => {
-        if (response.isSuccess) {
+        if (response.isSuccess && response.resultData) {
           router.push('/home')
         } else {
           setInvalidInput(true)
@@ -99,12 +101,20 @@ export default function LoginPage() {
             <Link className={'cursor-pointer text-gray-400'} size='sm'>
               Forgot Password
             </Link>
-            <Link className={'cursor-pointer text-gray-400'} size='sm'>
+            <Link
+              className={'cursor-pointer text-gray-400'}
+              size='sm'
+              onClick={() => setOpenCreateModal(true)}
+            >
               Create Account
             </Link>
           </div>
         </div>
       </div>
+      <CreateAccount
+        isOpenCreateModal={isOpenCreateModal}
+        setOpenCreateModal={setOpenCreateModal}
+      />
     </>
   )
 }

@@ -1,0 +1,9 @@
+{
+    "login-screen":{
+        "username":"Username",
+        "password":"Password",
+        "login":"Login",
+        "forgotPassword":"Forgot Password",
+        "createAccount":"Create Account"
+    }
+}
