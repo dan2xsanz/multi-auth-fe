@@ -1,120 +1,197 @@
 'use client'
-import { Button, Input, Link } from '@nextui-org/react'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
-import { LoginDefaultValue, LoginInterface } from './data/loginInterface'
-import { LoginRequest } from '../service'
+import { ForgotPassword, SignUpAccount } from './components'
+import { loginDefaultValue, LoginInterface } from './data'
 import { ResponseInterface } from '@/config/config'
-import { CreateAccount } from './components'
+import React, { Fragment, useState } from 'react'
+import { checkRequiredFields } from '../utils'
+import { useRouter } from 'next/navigation'
+import { LoginRequest } from '../service'
+import { useStore } from '../store'
+import {
+  openSuccessNotification,
+  openWarningNotification,
+  CommonInputField,
+  CommonLinkButton,
+  CommonTypography,
+  CommonButon,
+} from '../common'
+import {
+  ButtonColorTypeEnum,
+  TypographySizeEnum,
+  ButtonTypeEnum,
+  LinkSizeEnum,
+  RadiusEnum,
+  SizeEnum,
+} from '../constant/enums'
 
 export default function LoginPage() {
-  // LOGIN DETAILS
-  const [loginDetails, setLogInDetails] =
-    useState<LoginInterface>(LoginDefaultValue)
-
-  const [isInvalidInput, setInvalidInput] = useState<boolean>(false)
-
-  const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false)
+  // LOADING SCREEN STORE
+  const { setIsLoading } = useStore()
 
   // PATH ROUTHER
   const router = useRouter()
+
+  // LOGIN DETAILS
+  const [loginDetails, setLogInDetails] =
+    useState<LoginInterface>(loginDefaultValue)
+
+  // LOGIN OR SIGN UP FORM DISPLAY
+  const [isOpenSignUpForm, setOpenSignUpForm] = useState<boolean>(false)
+
+  // FORGOT PASSWORD FORM DISPLAYE
+  const [isOpenForgotPass, setOpenForgotPass] = useState<boolean>(false)
+
+  // ERROR KEY FIEDLS HANDLER
+  const [errorFields, setErrorFields] = useState<string[]>([])
 
   // ON CHANGE FIELDS
   const onChangeFields = (data: LoginInterface) => {
     setLogInDetails({ ...loginDetails, ...data })
   }
 
+  // ON ENTER FIELDS
+  const onEnterFields = (data: { key: string }) => {
+    if (data.key === 'Enter') onClickLogInButton()
+  }
+
+  // ON CLICK SIGN UP BUTTON
+  const onClickSignUpButton = () => {
+    setErrorFields([])
+    setOpenSignUpForm(true)
+    onChangeFields(loginDefaultValue)
+  }
+
+  // ON CLICK FORGOT PASS BUTTON
+  const onClickForgotPassButton = () => {
+    setErrorFields([])
+    setOpenForgotPass(true)
+    onChangeFields(loginDefaultValue)
+  }
+
+  // LOG IN REQUEST
   const onClickLogInButton = () => {
-    // SET LOADING HERE
-    LoginRequest(loginDetails)
-      .then((response: ResponseInterface) => {
-        if (response.isSuccess && response.resultData) {
-          router.push('/home')
-        } else {
-          setInvalidInput(true)
-        }
-      })
-      .catch((error: ResponseInterface) => {
-        setInvalidInput(true)
-      })
-      .finally(() => {
-        // SET LOADING HERE
-      })
+    let errors = checkRequiredFields(loginDefaultValue, loginDetails)
+    if (errors.length > 0) {
+      setErrorFields(errors)
+    } else {
+      setIsLoading(true)
+      LoginRequest(loginDetails)
+        .then((response: ResponseInterface) => {
+          if (response.isSuccess && response.resultData) {
+            openSuccessNotification({
+              description: 'Logged in successfully.',
+              placement: 'bottomRight',
+            })
+            router.push('/home')
+            onChangeFields(loginDefaultValue)
+          }
+        })
+        .catch((error: any) => {
+          // RETURN ERROR MESSAGE
+          openWarningNotification({
+            description: error.response?.data?.message || 'An error occurred',
+            placement: 'bottomRight',
+          })
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
+    }
   }
 
   return (
-    <>
-      <div style={{ width: '400px', height: '300px', padding: '20px' }}>
-        <div className='flex w-full flex-wrap md:flex-nowrap gap-4'>
-          <Input
-            size='sm'
-            required
-            key={'email'}
-            type='email'
-            label='Email'
-            disableAnimation={true}
-            isInvalid={isInvalidInput}
-            value={loginDetails?.userName}
-            errorMessage={isInvalidInput ? 'Please enter a valid email' : ''}
-            onChange={(data) => {
-              setInvalidInput(false)
-              onChangeFields({ ...loginDetails, userName: data.target.value })
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') onClickLogInButton()
-            }}
-          />
-          <Input
-            size='sm'
-            required
-            key={'pasword'}
-            type='password'
-            label='Password'
-            isInvalid={isInvalidInput}
-            value={loginDetails?.password}
-            onDragEnter={onClickLogInButton}
-            errorMessage={isInvalidInput ? 'Please enter a valid password' : ''}
-            onChange={(data) => {
-              setInvalidInput(false)
-              onChangeFields({ ...loginDetails, password: data.target.value })
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') onClickLogInButton()
-            }}
-          />
-          <Button
-            size='lg'
-            radius='sm'
-            type='submit'
-            fullWidth={true}
-            onClick={onClickLogInButton}
-          >
-            Login
-          </Button>
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Link className={'cursor-pointer text-gray-400'} size='sm'>
-              Forgot Password
-            </Link>
-            <Link
-              className={'cursor-pointer text-gray-400'}
-              size='sm'
-              onClick={() => setOpenCreateModal(true)}
-            >
-              Create Account
-            </Link>
+    <Fragment>
+      <div className='login-form-container'>
+        {!isOpenSignUpForm && !isOpenForgotPass && (
+          <div className='login-fields-container'>
+            <div className='grid w-full'>
+              <CommonTypography
+                label={'Login'}
+                size={TypographySizeEnum.xxlarge}
+              />
+              <div className='sign-up-container'>
+                <div style={{ height: '27.8px' }}>
+                  <CommonTypography
+                    size={TypographySizeEnum.note}
+                    label={"Doesn't have an account yet?"}
+                  />
+                </div>
+                <div>
+                  <CommonLinkButton
+                    label='Sign Up'
+                    size={LinkSizeEnum.xsmall}
+                    onClick={onClickSignUpButton}
+                  />
+                </div>
+              </div>
+            </div>
+            <CommonInputField
+              type={'email'}
+              key={'username'}
+              label={'Username'}
+              required={true}
+              size={SizeEnum.small}
+              onKeyDown={onEnterFields}
+              value={loginDetails?.username}
+              isError={errorFields.includes('username')}
+              onChange={(data) =>
+                onChangeFields({
+                  ...loginDetails,
+                  username: data.target.value,
+                })
+              }
+            />
+            <div className='forgot-password-container'>
+              <div>
+                <CommonTypography
+                  size={TypographySizeEnum.note}
+                  label={'Forgot Password?'}
+                />
+              </div>
+              <div>
+                <CommonLinkButton
+                  label='Need Help Logging In'
+                  size={LinkSizeEnum.xsmall}
+                  onClick={onClickForgotPassButton}
+                />
+              </div>
+            </div>
+            <CommonInputField
+              required={true}
+              key={'password'}
+              type={'password'}
+              label={'Password'}
+              size={SizeEnum.small}
+              onKeyDown={onEnterFields}
+              value={loginDetails?.password}
+              isError={errorFields.includes('password')}
+              onChange={(data) =>
+                onChangeFields({
+                  ...loginDetails,
+                  password: data.target.value,
+                })
+              }
+            />
+            <div className='login-button-container'>
+              <CommonButon
+                fullWidth={true}
+                buttonTxt='Login'
+                size={SizeEnum.medium}
+                radius={RadiusEnum.small}
+                type={ButtonTypeEnum.submit}
+                onClick={onClickLogInButton}
+                buttonColorType={ButtonColorTypeEnum.primary}
+              />
+            </div>
           </div>
-        </div>
+        )}
+        {isOpenSignUpForm && (
+          <SignUpAccount setOpenSignUpForm={setOpenSignUpForm} />
+        )}
+        {isOpenForgotPass && (
+          <ForgotPassword setOpenForgotPass={setOpenForgotPass} />
+        )}
       </div>
-      <CreateAccount
-        isOpenCreateModal={isOpenCreateModal}
-        setOpenCreateModal={setOpenCreateModal}
-      />
-    </>
+    </Fragment>
   )
 }

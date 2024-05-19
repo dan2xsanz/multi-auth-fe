@@ -1,3 +1,4 @@
+import { PopUpNotification } from "@/app/common/pop-up/pop-up";
 import { REQUEST_URL } from "@/properties";
 import axios, { AxiosInstance } from "axios";
 
@@ -6,6 +7,7 @@ import axios, { AxiosInstance } from "axios";
 axios.interceptors.request.use(function (request) {
     return request;
   }, function (error) {
+    console.log("REQUEST"+error)
     return Promise.reject(error);
   });
 
@@ -14,5 +16,6 @@ axios.interceptors.request.use(function (request) {
 axios.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
+    console.log("RESPONSE"+error)
     return Promise.reject(error);
   });

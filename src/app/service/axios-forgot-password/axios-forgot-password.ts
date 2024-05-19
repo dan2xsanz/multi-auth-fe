@@ -1,14 +1,14 @@
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import { ForgotPasswordInterface } from '@/app/login/components'
 import { ResponseInterface } from '@/config/config'
 import { REQUEST_URL } from '@/properties'
-import { LoginInterface } from '@/app'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 
-export const LoginRequest = (
-  data: LoginInterface,
+export const ForgotPasswordRequest = (
+  data: ForgotPasswordInterface,
 ): Promise<ResponseInterface> => {
   return new Promise((resolve, reject) => {
     axios
-      .post<ResponseInterface>(`${REQUEST_URL}/auth/login`, data)
+      .post<ResponseInterface>(`${REQUEST_URL}/auth/forgot-password`, data)
       .then(function (response: AxiosResponse<ResponseInterface>) {
         resolve(response.data)
       })

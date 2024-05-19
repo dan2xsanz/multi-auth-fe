@@ -1,0 +1,54 @@
+.input-field div{
+    background-color:#FBF9FA;
+    border-width: 0.001rem;
+    border-color: #FD0054;
+}
+
+.input-field div:hover{
+    background-color:#FBF9FA;
+}
+
+.input-field div div{
+    background-color:#FBF9FA;
+    border-width: 0px;
+}
+
+.input-field label{
+   color: #2B2024;
+}
+
+@media (max-width: 600px) {
+    .input-field div{
+        height: 40px;
+        border-radius: 8px;
+    }
+    .input-field label{
+        font-size: 10px;
+        font-family:Verdana, Geneva, Tahoma, sans-serif;
+    }
+    .input-field input{
+        margin-top: 15px;
+        font-size: 10px;
+        font-family:Verdana, Geneva, Tahoma, sans-serif;
+    }
+}   
+
+.input-field-error > div {
+    background-color: #FBF9FA;
+    border-width: 0.001rem;
+    border-color: #FD0054;
+    box-shadow: 0 0 5px #fd00547f; /* Add a glowing effect */
+}
+
+.input-field-error > div:hover {
+    background-color: #FBF9FA;
+}
+
+.input-field-error label {
+    color: #e33232;
+}
+
+.input-field-error > div > div {
+    background-color: #FBF9FA;
+    border-width: 0px;
+}
