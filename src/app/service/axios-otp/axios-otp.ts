@@ -1,14 +1,14 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ResponseInterface } from '@/config/config'
 import { REQUEST_URL } from '@/properties'
-import { LoginInterface } from '@/app'
+import { CreateAccountInterface } from '@/app/login/components/create-account/data'
 
-export const LoginRequest = (
-  data: LoginInterface,
+export const OtpVerificationRequest = (
+  data: CreateAccountInterface,
 ): Promise<ResponseInterface> => {
   return new Promise((resolve, reject) => {
     axios
-      .post<ResponseInterface>(`${REQUEST_URL}/auth/login`, data)
+      .post<ResponseInterface>(`${REQUEST_URL}/otp/verify-user`, data)
       .then(function (response: AxiosResponse<ResponseInterface>) {
         resolve(response.data)
       })

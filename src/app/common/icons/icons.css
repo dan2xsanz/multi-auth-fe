@@ -1,0 +1,11 @@
+.icon-style-container {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    fill: #155263;
+    transition: all 0.3s ease;
+  }
+  
+  .icon-style-container:hover svg{
+    fill: #15526384; 
+  }
