@@ -28,6 +28,8 @@ export default function LoginPage() {
   // LOADING SCREEN STORE
   const { setIsLoading } = useStore()
 
+  const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false)
+
   // PATH ROUTHER
   const router = useRouter()
 
