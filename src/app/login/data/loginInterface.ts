@@ -1,9 +1,9 @@
 export interface LoginInterface{
-    userName: string,
+    username: string,
     password:string
 }
 
-export const LoginDefaultValue:LoginInterface={
-    userName:"",
+export const loginDefaultValue:LoginInterface={
+    username:"",
     password:""
 }

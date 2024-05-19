@@ -1,1 +1,3 @@
-export * from "./create-account/create-account"
+export * from "./create-account"
+export * from "./otp-validation"
+export * from "./forgot-password"
