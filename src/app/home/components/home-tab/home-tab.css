@@ -1,0 +1,159 @@
+.title-container-1{
+    color: #2B2024;
+    font-size:12px;
+    gap:20px;
+    display: flex;
+    margin: 10px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.title-container-2-link{
+    color: #2B2024;
+    font-size:12px;
+    gap:30px;
+    display: flex;
+    margin: 10px;
+    cursor: pointer;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
+ /* START LEFT CONTAINER */
+.market-place-left-container{
+    width: 14%;
+    margin: 2px;
+}
+
+
+.market-place-product-categories-container{
+    max-height: 600px;
+    overflow-y: auto;
+    flex-wrap: wrap;
+    margin: 10px;
+}
+
+.category-item-style{
+    color: black;
+    font-size: 12px;
+}
+
+.category-item-style:hover{
+    color: black;
+    cursor: pointer;
+    font-weight: bold;
+    border-bottom-width: 0.5px;
+    border-bottom-color: black;
+}
+ /* END LEFT CONTAINER */
+
+
+ /* START CENTER CONTAINER */
+.market-place-center-container{
+    width: 80%;
+    margin: 2px;
+}
+ 
+.scrollable-center-container{
+  max-height: 600px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+}
+
+.image-main-container{
+    margin: 2px;
+    position: relative;
+}
+
+.image-container{
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.image-style{
+    height: 255px;
+    width: 346.3px;
+    object-fit: cover;
+}
+
+
+.image-detail-container {
+    top: 191px;
+    left: 0;
+    width: 100%;
+    color: white;
+    z-index: 2;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.334);
+    cursor: pointer;
+    padding-left: 5.5px;
+  }
+
+.image-price-label-container{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 15px;
+}
+
+.image-name-label-container{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+.image-supporting-detail-label-container{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 12px;
+}
+
+/* END CENTER CONTAINER */
+
+
+
+/* START RIGHT CONTAINER */
+.market-place-right-container{
+    width: 18%;
+    margin: 2px;
+}
+
+.scrollable-right-container{
+  max-height: 600px;
+  overflow-y: auto;
+  flex-wrap: wrap;
+}
+
+.message-container{
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    padding: 5px;
+    cursor: pointer;
+    background-color: rgba(0, 128, 0, 0.081);
+}
+
+.message-container {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    padding: 5px;
+    cursor: pointer;
+   background-color: white;
+}
+
+.message-name-container{
+    color: #2B2024;
+    font-size:12px;
+    gap:20px;
+    display: flex;
+    margin: 10px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+  
+.message-container:hover{
+    background-color: rgba(0, 0, 0, 0.029);
+}
+
+
+
+/* END RIGHT CONTAINER */
