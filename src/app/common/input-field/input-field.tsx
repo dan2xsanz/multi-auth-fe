@@ -36,7 +36,8 @@ export const CommonInputField = (props: InputFieldInterface) => {
         size={size}
         type={type}
         label={`${required ? '* ' : ''}${label} `}
-        value={value}
+        value={value && value}
+        radius='none'
         onChange={(data) => onChange && onChange(data)}
         onKeyDown={(data) => onKeyDown && onKeyDown(data)}
         className={isError && !value ? 'input-field-error' : 'input-field'}
@@ -46,7 +47,7 @@ export const CommonInputField = (props: InputFieldInterface) => {
           isError={true}
           size={TypographySizeEnum.note}
           label={`${label} field is required`}
-          style={{ marginTop: '-10px', color: 'red' }}
+          style={{ marginTop: '-9px', color: 'black' }}
         />
       )}
     </>
