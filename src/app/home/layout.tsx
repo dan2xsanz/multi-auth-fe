@@ -1,17 +1,15 @@
-export default function LoginLayout({
-    children,
-  }: {
-    children: React.ReactNode
-  }) {
-    return (
-      <div style={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+'use client'
+import './home.css'
+export default function HomeLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <div className='main-background'>
+      <div className={`main-container`}>
         {children}
       </div>
-    );
-  }
+    </div>
+  )
+}

@@ -1,5 +1,5 @@
 'use client'
-import { useStore } from '../store/zustand-store'
+import { useStore } from '../store'
 import './login.css'
 import { Spin } from 'antd'
 
@@ -11,10 +11,10 @@ export default function LoginLayout({
   const { isLoading } = useStore()
 
   return (
-    <div className='main-background'>
+    <div className='main-background-login'>
       {isLoading && (
         <div className='overlay'>
-          <Spin size='large'  />
+          <Spin size='large' />
         </div>
       )}
       <div className={`main-container ${isLoading ? 'unclickable' : ''}`}>

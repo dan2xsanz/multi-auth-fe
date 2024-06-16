@@ -1,7 +1,7 @@
 .input-field div{
     background-color:#FBF9FA;
     border-width: 0.001rem;
-    border-color: #FD0054;
+    border-color:rgba(0, 0, 0, 0.419);
 }
 
 .input-field div:hover{
@@ -36,8 +36,8 @@
 .input-field-error > div {
     background-color: #FBF9FA;
     border-width: 0.001rem;
-    border-color: #FD0054;
-    box-shadow: 0 0 5px #fd00547f; /* Add a glowing effect */
+    border-color: rgba(0, 0, 0, 0.419);
+    box-shadow: 0 0 5px black; /* Add a glowing effect */
 }
 
 .input-field-error > div:hover {
@@ -45,7 +45,7 @@
 }
 
 .input-field-error label {
-    color: #e33232;
+    color: black;
 }
 
 .input-field-error > div > div {

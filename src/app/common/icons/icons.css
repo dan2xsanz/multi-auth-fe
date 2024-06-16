@@ -2,10 +2,22 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
-    fill: #155263;
+    fill: black;
     transition: all 0.3s ease;
   }
   
   .icon-style-container:hover svg{
-    fill: #15526384; 
+    fill: rgba(0, 0, 0, 0.516);
   }
+
+  .add-icon-style-container {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    fill: black;
+    transition: all 0.3s ease;
+  }
+  
+  /* .add-icon-style-container:hover svg{
+    fill: rgba(0, 0, 0, 0.516);
+  } */

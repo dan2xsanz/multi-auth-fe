@@ -16,10 +16,14 @@ import {
   CommonInputField,
   CommonLinkButton,
   CommonTypography,
+  CommonCheckBox,
   ButtonTypeEnum,
+  FacebookIcon,
   LinkSizeEnum,
   CommonButon,
   RadiusEnum,
+  GoogleIcon,
+  GitHubIcon,
   SizeEnum,
 } from '@/app'
 
@@ -209,6 +213,11 @@ export const SignUpAccount = (props: CreateAccountModalInterface) => {
           onClick={onClickSignUpButton}
           buttonColorType={ButtonColorTypeEnum.primary}
         />
+      </div>
+      <div className='login-icon-container'>
+        <GoogleIcon onClick={() => {}} />
+        <FacebookIcon onClick={() => {}} />
+        <GitHubIcon onClick={() => {}} />
       </div>
     </div>
   )

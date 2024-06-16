@@ -56,13 +56,13 @@ export const ForgotPassword = (props: ForgotPasswordModalInterface) => {
 
   // ON CLICK SIGN UP BUTTON
   const onClickSendOtpButton = () => {
-    setIsLoading(true)
     const errorFields: string[] = checkRequiredFields(
       forgotPasswordDefaultValues,
       forgotPasswordDatails,
     )
     setErrorFields(errorFields)
     if (errorFields.length === 0) {
+      setIsLoading(true)
       // TODO HERE
       ForgotPasswordRequest(forgotPasswordDatails)
         .then((data: ResponseInterface) => {
