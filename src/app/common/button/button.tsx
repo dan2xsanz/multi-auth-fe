@@ -44,7 +44,7 @@ export const CommonButon = (props: CommonButtonInterface) => {
       {...rest}
       size={size}
       type={type}
-      radius={radius}
+      radius={'none'}
       onClick={onClick}
       fullWidth={fullWidth}
       isDisabled={disabled}
