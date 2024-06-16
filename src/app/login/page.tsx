@@ -1,4 +1,5 @@
 'use client'
+import { accountDetailStore, logInStore, useStore } from '../store'
 import { ForgotPassword, SignUpAccount } from './components'
 import { loginDefaultValue, LoginInterface } from './data'
 import { ResponseInterface } from '@/config/config'
@@ -6,7 +7,6 @@ import React, { Fragment, useState } from 'react'
 import { checkRequiredFields } from '../utils'
 import { useRouter } from 'next/navigation'
 import { LoginRequest } from '../service'
-import { useStore } from '../store'
 import {
   openSuccessNotification,
   openWarningNotification,
@@ -26,16 +26,13 @@ import {
 
 export default function LoginPage() {
   // LOADING SCREEN STORE
+  const { setAccountId, setFirstName, setLastName, setEmail } =
+    accountDetailStore()
   const { setIsLoading } = useStore()
-
-  const [isOpenCreateModal, setOpenCreateModal] = useState<boolean>(false)
+  const { setIsLogIn } = logInStore()
 
   // PATH ROUTHER
   const router = useRouter()
-
-  // LOGIN DETAILS
-  const [loginDetails, setLogInDetails] =
-    useState<LoginInterface>(loginDefaultValue)
 
   // LOGIN OR SIGN UP FORM DISPLAY
   const [isOpenSignUpForm, setOpenSignUpForm] = useState<boolean>(false)
@@ -45,6 +42,10 @@ export default function LoginPage() {
 
   // ERROR KEY FIEDLS HANDLER
   const [errorFields, setErrorFields] = useState<string[]>([])
+
+  // LOGIN DETAILS
+  const [loginDetails, setLogInDetails] =
+    useState<LoginInterface>(loginDefaultValue)
 
   // ON CHANGE FIELDS
   const onChangeFields = (data: LoginInterface) => {
@@ -70,6 +71,13 @@ export default function LoginPage() {
     onChangeFields(loginDefaultValue)
   }
 
+  const onSetAccountDetails = (response: ResponseInterface) => {
+    setAccountId(response.resultData.id)
+    setEmail(response.resultData.email)
+    setLastName(response.resultData.lastName)
+    setFirstName(response.resultData.firstName)
+  }
+
   // LOG IN REQUEST
   const onClickLogInButton = () => {
     let errors = checkRequiredFields(loginDefaultValue, loginDetails)
@@ -80,11 +88,16 @@ export default function LoginPage() {
       LoginRequest(loginDetails)
         .then((response: ResponseInterface) => {
           if (response.isSuccess && response.resultData) {
+            // LOGIN SUCCESSFUL
             openSuccessNotification({
               description: 'Logged in successfully.',
               placement: 'bottomRight',
             })
+            // SET ACCOUNT DETAILS
+            onSetAccountDetails(response)
+            // REDIRECT TO HOME
             router.push('/home')
+            setIsLogIn(true)
             onChangeFields(loginDefaultValue)
           }
         })

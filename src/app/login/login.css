@@ -1,10 +1,10 @@
 
-.main-background {
+.main-background-login {
     position: relative;
     width: 100vw;
     height: 100vh;
     display: flex;
-    margin-top: -2%;
+    margin-top: -3%;
     align-items: center;
     justify-content: center;
     background-color: #FBF9FA;
@@ -32,10 +32,9 @@
     padding-top: 10px;
     margin-bottom: -15px;
     border-top-width: 3px;
-    border-top-color: #FD0054;
+    border-top-color: black;
     justify-content: space-between;
     
-
 }
 
 .forgot-password-container{
@@ -77,6 +76,6 @@
 }
 
 .ant-spin-lg .ant-spin-dot-item {
-    background-color: #FD0054; 
+    background-color: black; 
   }
   
