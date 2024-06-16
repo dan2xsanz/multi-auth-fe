@@ -1,0 +1,68 @@
+/* MODAL BODY STYLE */
+.modal-body-container{
+    margin-top: 15px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+ }
+
+ .modal-image-container{
+    width: 50%;
+    height: 440px;
+    background-color: rgba(0, 0, 0, 0.055);
+ }
+
+ .snz-logo-container{
+    height:440px ;
+    color: rgba(0, 0, 0, 0.163);
+    line-height: 440px;
+    text-align: center;
+    font-size: 70px;
+    font-weight: bolder;
+    user-select: none;
+ }
+
+ .carousel-content-container{
+    height:440px ;
+    line-height: 160px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.137);
+ }
+
+ .product-detail-container{
+    height: 440px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 440px;
+    overflow-y: auto;
+    gap: 5px;
+ }
+
+ .text-area-style div{
+    background-color:#FBF9FA;
+    border-width: 0.001rem;
+    color: black;
+    border-color:rgba(0, 0, 0, 0.419);
+}
+
+.text-area-style label{
+    color: black;
+    background-color:none;
+    border-width:0rem;
+}
+
+.text-area-style div div{
+    color: black;
+    background-color:none;
+    border-width:0rem;
+}
+
+.text-area-style div:hover{
+    background-color:white;
+}
+
+.text-area-style div div:hover{
+    background-color:white;
+}
