@@ -1,47 +1,63 @@
-import React, { Fragment } from 'react'
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-} from '@nextui-org/react'
+import './modal.css'
+import React from 'react'
+import Modal from 'antd/es/modal'
 
 interface CommonModalInterface {
+  width?: string
   title?: string
+  height?: string
   isOpen?: boolean
-  onClose?: () => void
+  onOkayText?: string
+  onOkay?: () => void
+  onCancel?: () => void
+  onCancelText?: string
   children?: React.ReactNode
-  primaryBtnTxt?: string
-  secondaryBtnTxt?: string
+  isShowLogo?: boolean
 }
 
 export const CommonModal = (props: CommonModalInterface) => {
-  const { isOpen, onClose, children, title, primaryBtnTxt, secondaryBtnTxt } =
-    props
+  const {
+    isOpen,
+    onOkay,
+    title,
+    width,
+    height,
+    onCancel,
+    children,
+    isShowLogo,
+    onOkayText,
+    onCancelText,
+  } = props
 
   return (
     <Modal
-      backdrop='blur'
-      isOpen={isOpen}
-      onClose={onClose}
-      style={{ maxWidth: '30vw', height: '70vh' }}
+      className='my-custom-modal'
+      centered
+      width={width}
+      open={isOpen}
+      closeIcon={false}
+      footer={
+        <div className='footer-buttons-container'>
+          <div className='footer-cancel-button' onClick={onCancel}>
+            {onCancelText}
+          </div>
+          <div className='footer-submit-button' onClick={onOkay}>
+            {onOkayText}
+          </div>
+        </div>
+      }
     >
-      <ModalContent>
-        {(onClose) => (
-          <Fragment>
-            <ModalHeader className='flex flex-col gap-1'>{title}</ModalHeader>
-            <ModalBody>{children}</ModalBody>
-            <ModalFooter>
-              <Button variant='light' onPress={onClose}>
-                {secondaryBtnTxt}
-              </Button>
-              <Button onPress={onClose}>{primaryBtnTxt}</Button>
-            </ModalFooter>
-          </Fragment>
+      <div className='modal-main-container' style={{ height: height }}>
+        {isShowLogo && (
+          <div className='snz-modal-background-container'>
+            <div>SNZ.</div>
+          </div>
         )}
-      </ModalContent>
+        <div className='modal-content'>
+          <p className='modal-content-title'>{title}</p>
+          {children}
+        </div>
+      </div>
     </Modal>
   )
 }
