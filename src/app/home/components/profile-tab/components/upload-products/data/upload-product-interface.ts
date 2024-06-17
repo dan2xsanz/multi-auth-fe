@@ -4,6 +4,8 @@ export interface UploadProductInterface {
   image2?: string | undefined
   image3?: string | undefined
   image4?: string | undefined
+  isSold?: boolean
+  isDeleted?: boolean
   productName?: string | undefined
   productPrice?: string | undefined
   productCategory?: number | string | undefined
@@ -19,6 +21,8 @@ export const UploadProductValues: UploadProductInterface = {
   image2: '',
   image3: '',
   image4: '',
+  isSold: false,
+  isDeleted: false,
   productName: '',
   productPrice: '',
   productCategory: '1',

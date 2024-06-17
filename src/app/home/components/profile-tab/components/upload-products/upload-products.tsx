@@ -3,17 +3,19 @@ import { UploadProductInterface, UploadProductValues } from './data'
 import { accountDetailStore, useStore } from '@/app/store'
 import { CommonModal } from '@/app/common/modal/modal'
 import { Image as AntdImage, Carousel } from 'antd'
+import { useEffect, useRef, useState } from 'react'
 import { ResponseInterface } from '@/config/config'
 import { Textarea } from '@nextui-org/react'
-import { useRef, useState } from 'react'
 import './upload-products.css'
 
 import {
+  openWarningNotification,
   openSuccessNotification,
   openErrorNotification,
   productConditionItems,
   productCategoryItems,
   CreateProductRequest,
+  checkRequiredFields,
   ButtonColorTypeEnum,
   TypographySizeEnum,
   CommonInputField,
@@ -22,17 +24,26 @@ import {
   CommonDropdown,
   CommonButon,
   SizeEnum,
-  checkRequiredFields,
+  UpdateProductRequest,
 } from '@/index'
 
 interface UploadProductProps {
   openAddNewProduct: boolean
+  setRefreshList: (data: boolean) => void
+  productUploadDetails: UploadProductInterface
   setOpendAddNewProduct: (data: boolean) => void
+  setProductUploadDetails: (data: UploadProductInterface) => void
 }
 
 export const UploadProduct = (props: UploadProductProps) => {
   // UPLOAD PRODUCTS PROPS
-  const { openAddNewProduct, setOpendAddNewProduct } = props
+  const {
+    setRefreshList,
+    openAddNewProduct,
+    productUploadDetails,
+    setOpendAddNewProduct,
+    setProductUploadDetails,
+  } = props
 
   // UPLOADED PRODUCT IMAGES
   const [productImages, setProductImages] = useState<any[]>([null])
@@ -48,10 +59,6 @@ export const UploadProduct = (props: UploadProductProps) => {
 
   // LOADING SCREEN STORE
   const { setIsLoading } = useStore()
-
-  // PRODUCT UPLOAD DETAILS
-  const [productUploadDetails, setProductUploadDetails] =
-    useState<UploadProductInterface>(UploadProductValues)
 
   // UPLOAD IMAGE HANDLER
   const uploadImageHandler = (e: any) => {
@@ -113,28 +120,56 @@ export const UploadProduct = (props: UploadProductProps) => {
 
   // ONCLICK START SELLING
   const startSellingItems = async () => {
-    setIsLoading(true)
-    try {
-      const response: ResponseInterface = await CreateProductRequest({
-        ...productUploadDetails,
-        accountMasterId: accountId,
-      })
-      // RETURN SUCCESS MESSAGE
-      if (response.isSuccess && response.resultData) {
-        openSuccessNotification({
-          description: 'Product uploaded successfully.',
+    if (productUploadDetails.id === undefined) {
+      setIsLoading(true)
+      try {
+        const response: ResponseInterface = await CreateProductRequest({
+          ...productUploadDetails,
+          accountMasterId: accountId,
+        })
+        // RETURN SUCCESS MESSAGE
+        if (response.isSuccess && response.resultData) {
+          openSuccessNotification({
+            description: 'Product uploaded successfully.',
+            placement: 'bottomRight',
+          })
+        }
+      } catch (error: any) {
+        // RETURN ERROR MESSAGE
+        openErrorNotification({
+          description: error.response?.data?.message || 'An error occurred',
           placement: 'bottomRight',
         })
+      } finally {
+        setRefreshList(true)
+        setIsLoading(false)
+        onClickCancelSellingItems()
       }
-    } catch (error: any) {
-      // RETURN ERROR MESSAGE
-      openErrorNotification({
-        description: error.response?.data?.message || 'An error occurred',
-        placement: 'bottomRight',
-      })
-    } finally {
-      setIsLoading(false)
-      onClickCancelSellingItems()
+    } else {
+      setIsLoading(true)
+      try {
+        const response: ResponseInterface = await UpdateProductRequest({
+          ...productUploadDetails,
+          accountMasterId: accountId,
+        })
+        // RETURN SUCCESS MESSAGE
+        if (response.isSuccess && response.resultData) {
+          openSuccessNotification({
+            description: 'Product updated successfully.',
+            placement: 'bottomRight',
+          })
+        }
+      } catch (error: any) {
+        // RETURN ERROR MESSAGE
+        openErrorNotification({
+          description: error.response?.data?.message || 'An error occurred',
+          placement: 'bottomRight',
+        })
+      } finally {
+        setRefreshList(true)
+        setIsLoading(false)
+        onClickCancelSellingItems()
+      }
     }
   }
 
@@ -150,6 +185,8 @@ export const UploadProduct = (props: UploadProductProps) => {
         'image2',
         'image3',
         'image4',
+        'isSold',
+        'isDeleted',
         'productCategory',
         'productCondition',
         'accountMasterId',
@@ -163,9 +200,26 @@ export const UploadProduct = (props: UploadProductProps) => {
     }
     setErrorFields(errorFields)
     if (errorFields.length === 0) {
-      startSellingItems()
+      if (productImages[0] !== '') {
+        startSellingItems()
+      } else {
+        openWarningNotification({
+          description: 'Please upload images' || 'Warning occured',
+          placement: 'bottomRight',
+        })
+      }
     }
   }
+
+  useEffect(() => {
+    let productImagesEdit = [
+      productUploadDetails.image1,
+      productUploadDetails.image2,
+      productUploadDetails.image3,
+      productUploadDetails.image4,
+    ]
+    setProductImages(productImagesEdit)
+  }, [productUploadDetails])
 
   return (
     <CommonModal
@@ -290,7 +344,6 @@ export const UploadProduct = (props: UploadProductProps) => {
             }}
           />
           <Textarea
-            maxLength={1000}
             key={'productDescription'}
             radius='none'
             type='description'

@@ -4,6 +4,7 @@
     gap: 10px;
     padding: 10px;
     border-bottom-width: 1px;
+    /* background-color: green; */
 }
 
 .images-container{
@@ -69,15 +70,39 @@ justify-content: space-between;
 }
 
 .image-category{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+.image-price{
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
 .image-description{
-    margin-top: 20px ;
-    max-height: 252px;
+    font-size: 14px;
+    max-height: 245px;
     overflow-wrap: break-word;
-    height: 252px;
+    height: 245px;
     overflow-y:auto;
     text-align: justify;
+    margin-bottom: 10px;
     
+}
+
+
+.action-buttons-container{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.action-button-style{
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.action-button-style:hover{
+   color: rgba(0, 0, 0, 0.438)
 }
