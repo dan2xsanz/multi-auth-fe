@@ -1,4 +1,4 @@
-export interface UploadProductInterface {
+export interface ProductListInterface {
   id?: number | undefined
   image1?: string | undefined
   image2?: string | undefined
@@ -10,15 +10,16 @@ export interface UploadProductInterface {
   productCurrency?: number | string | undefined
   productPrice?: string | undefined
   productDiscount?: string | undefined
-  itemFor?: number | string | undefined
+  itemFor?: string | undefined
   productCategory?: number | string | undefined
   productCondition?: number | string | undefined
   productDescription?: string | undefined
   productLocation?: string | undefined
   accountMasterId?: number | undefined
+  justIn?: boolean
 }
 
-export const UploadProductValues: UploadProductInterface = {
+export const ProductListValues: ProductListInterface = {
   id: undefined,
   image1: '',
   image2: '',
@@ -29,11 +30,12 @@ export const UploadProductValues: UploadProductInterface = {
   productName: '',
   productPrice: '0.00',
   productDiscount: '',
+  itemFor: '',
   productCurrency: '1',
-  itemFor: '1',
   productCategory: '1',
   productCondition: '1',
   productDescription: '',
   productLocation: '',
   accountMasterId: undefined,
+  justIn: false,
 }

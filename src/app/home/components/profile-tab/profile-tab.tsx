@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { GetProductByUserRequest, UpdateProductRequest } from '@/app/service'
+import { GetProductByFilterRequest, UpdateProductRequest } from '@/app/service'
 import React, { Fragment, useEffect, useState } from 'react'
 import { openErrorNotification } from '@/app/common/pop-up'
 import { accountDetailStore, useStore } from '@/app/store'
@@ -45,7 +44,7 @@ export const ProfileTab = () => {
   const getAllProducts = async () => {
     setIsLoading(true)
     try {
-      const response: ResponseInterface = await GetProductByUserRequest({
+      const response: ResponseInterface = await GetProductByFilterRequest({
         accountId: accountId,
       })
       // RETURN SUCCESS MESSAGE

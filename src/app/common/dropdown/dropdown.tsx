@@ -1,6 +1,6 @@
 import { CommonTypography, TypographySizeEnum } from '@/index'
 import { Select, SelectItem } from '@nextui-org/react'
-import { Fragment } from 'react'
+import { CSSProperties, Fragment } from 'react'
 
 interface ItemsInterface {
   key: string | number
@@ -9,18 +9,20 @@ interface ItemsInterface {
 }
 
 interface CommonDropdownInterface {
-  label: string
+  label?: string
   isError?: boolean
   required?: boolean
   selectedKeys?: any
   items: ItemsInterface[]
   onChange: (data: any) => void
   defaultSelectedKeys: string[] | number[]
+  style?: CSSProperties | undefined
 }
 
 export const CommonDropdown = (props: CommonDropdownInterface) => {
   const {
     items,
+    style,
     label,
     isError,
     required,
@@ -49,9 +51,13 @@ export const CommonDropdown = (props: CommonDropdownInterface) => {
         radius='none'
         onChange={onChange}
         selectedKeys={selectedKeys}
-        label={`${required ? '*' : ''} ${label}`}
+        label={`${required ? '*' : ''} ${label ? label : ''}`}
         defaultSelectedKeys={defaultSelectedKeys}
-        style={isError && selectedKeys[0] === '' ? errorStyles : dynamicStyles}
+        style={
+          isError && selectedKeys[0] === ''
+            ? { ...errorStyles, ...style }
+            : { ...dynamicStyles, ...style }
+        }
       >
         {items.map((item) => (
           <SelectItem

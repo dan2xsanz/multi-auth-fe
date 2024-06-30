@@ -1,5 +1,5 @@
 import './modal.css'
-import React from 'react'
+import React, { useState } from 'react'
 import Modal from 'antd/es/modal'
 
 interface CommonModalInterface {
@@ -13,6 +13,7 @@ interface CommonModalInterface {
   onCancelText?: string
   children?: React.ReactNode
   isShowLogo?: boolean
+  isShowFooterButtons?: boolean
 }
 
 export const CommonModal = (props: CommonModalInterface) => {
@@ -27,24 +28,31 @@ export const CommonModal = (props: CommonModalInterface) => {
     isShowLogo,
     onOkayText,
     onCancelText,
+    isShowFooterButtons = true,
   } = props
+  
+  const [cancel, setCancel]= useState<boolean>(false)
 
   return (
     <Modal
-      className='my-custom-modal'
       centered
+      closable
       width={width}
       open={isOpen}
       closeIcon={false}
+      onCancel={onCancel}
+      className='my-custom-modal'
       footer={
-        <div className='footer-buttons-container'>
-          <div className='footer-cancel-button' onClick={onCancel}>
-            {onCancelText}
+        isShowFooterButtons && (
+          <div className='footer-buttons-container'>
+            <div className='footer-cancel-button' onClick={onCancel}>
+              {onCancelText}
+            </div>
+            <div className='footer-submit-button' onClick={onOkay}>
+              {onOkayText}
+            </div>
           </div>
-          <div className='footer-submit-button' onClick={onOkay}>
-            {onOkayText}
-          </div>
-        </div>
+        )
       }
     >
       <div className='modal-main-container' style={{ height: height }}>

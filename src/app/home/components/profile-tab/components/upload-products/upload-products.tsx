@@ -1,20 +1,19 @@
 'use client'
 import { UploadProductInterface, UploadProductValues } from './data'
 import { accountDetailStore, useStore } from '@/app/store'
+import { startSellingItemsOperation } from './operations'
 import { CommonModal } from '@/app/common/modal/modal'
 import { Image as AntdImage, Carousel } from 'antd'
 import { useEffect, useRef, useState } from 'react'
-import { ResponseInterface } from '@/config/config'
 import { Textarea } from '@nextui-org/react'
 import './upload-products.css'
 
 import {
   openWarningNotification,
-  openSuccessNotification,
   openErrorNotification,
   productConditionItems,
   productCategoryItems,
-  CreateProductRequest,
+  productCurrencyType,
   checkRequiredFields,
   ButtonColorTypeEnum,
   TypographySizeEnum,
@@ -24,7 +23,7 @@ import {
   CommonDropdown,
   CommonButon,
   SizeEnum,
-  UpdateProductRequest,
+  itemForType,
 } from '@/index'
 
 interface UploadProductProps {
@@ -120,57 +119,13 @@ export const UploadProduct = (props: UploadProductProps) => {
 
   // ONCLICK START SELLING
   const startSellingItems = async () => {
-    if (productUploadDetails.id === undefined) {
-      setIsLoading(true)
-      try {
-        const response: ResponseInterface = await CreateProductRequest({
-          ...productUploadDetails,
-          accountMasterId: accountId,
-        })
-        // RETURN SUCCESS MESSAGE
-        if (response.isSuccess && response.resultData) {
-          openSuccessNotification({
-            description: 'Product uploaded successfully.',
-            placement: 'bottomRight',
-          })
-        }
-      } catch (error: any) {
-        // RETURN ERROR MESSAGE
-        openErrorNotification({
-          description: error.response?.data?.message || 'An error occurred',
-          placement: 'bottomRight',
-        })
-      } finally {
-        setRefreshList(true)
-        setIsLoading(false)
-        onClickCancelSellingItems()
-      }
-    } else {
-      setIsLoading(true)
-      try {
-        const response: ResponseInterface = await UpdateProductRequest({
-          ...productUploadDetails,
-          accountMasterId: accountId,
-        })
-        // RETURN SUCCESS MESSAGE
-        if (response.isSuccess && response.resultData) {
-          openSuccessNotification({
-            description: 'Product updated successfully.',
-            placement: 'bottomRight',
-          })
-        }
-      } catch (error: any) {
-        // RETURN ERROR MESSAGE
-        openErrorNotification({
-          description: error.response?.data?.message || 'An error occurred',
-          placement: 'bottomRight',
-        })
-      } finally {
-        setRefreshList(true)
-        setIsLoading(false)
-        onClickCancelSellingItems()
-      }
-    }
+    startSellingItemsOperation(
+      accountId,
+      setIsLoading,
+      setRefreshList,
+      productUploadDetails,
+      onClickCancelSellingItems,
+    )
   }
 
   // VALIDATE REQUIRED FIELDS BEFORE SELLING
@@ -187,9 +142,12 @@ export const UploadProduct = (props: UploadProductProps) => {
         'image4',
         'isSold',
         'isDeleted',
+        'itemFor',
         'productCategory',
         'productCondition',
         'accountMasterId',
+        'productDiscount',
+        'productCurrency',
       ],
     )
     if (productUploadDetails.productCategory === '') {
@@ -281,8 +239,9 @@ export const UploadProduct = (props: UploadProductProps) => {
           />
           <CommonInputField
             required
+            type={'text'}
+            maxLength={40}
             key={'productName'}
-            type={'productName'}
             label={'Product Name'}
             size={SizeEnum.small}
             isError={errorFields.includes('productName')}
@@ -294,19 +253,71 @@ export const UploadProduct = (props: UploadProductProps) => {
               })
             }}
           />
-          <CommonInputField
+          <div style={{ display: 'flex', gap: '2px' }}>
+            <CommonDropdown
+              required
+              key={'productCurrency'}
+              items={productCurrencyType}
+              label={'Currency'}
+              defaultSelectedKeys={['2']}
+              style={{ width: '120px' }}
+              isError={errorFields.includes('productCurrency')}
+              selectedKeys={[productUploadDetails.productCurrency]}
+              onChange={(data) => {
+                if (data.target.value) {
+                  onChangeFields({
+                    ...productUploadDetails,
+                    productCurrency: data.target.value,
+                  })
+                }
+              }}
+            />
+            <CommonInputField
+              required
+              key={'productPrice'}
+              size={SizeEnum.small}
+              type={'number'}
+              label={'Product Price'}
+              style={{ width: '180px' }}
+              value={productUploadDetails.productPrice}
+              isError={errorFields.includes('productPrice')}
+              onChange={(data) => {
+                onChangeFields({
+                  ...productUploadDetails,
+                  productPrice:
+                    data.target.value === '' ? '0.00' : data.target.value,
+                })
+              }}
+            />
+            <CommonInputField
+              maxLength={2}
+              type={'number'}
+              label={'Discount %'}
+              size={SizeEnum.small}
+              key={'productDiscount'}
+              value={productUploadDetails.productDiscount}
+              onChange={(data) => {
+                onChangeFields({
+                  ...productUploadDetails,
+                  productDiscount: data.target.value,
+                })
+              }}
+            />
+          </div>
+          <CommonDropdown
             required
-            key={'productPrice'}
-            type={'productPrice'}
-            label={'Product Price'}
-            size={SizeEnum.small}
-            value={productUploadDetails.productPrice}
-            isError={errorFields.includes('productPrice')}
+            key={'itemFor'}
+            label={'Item for'}
+            items={itemForType}
+            defaultSelectedKeys={['1']}
+            selectedKeys={[productUploadDetails.itemFor]}
             onChange={(data) => {
-              onChangeFields({
-                ...productUploadDetails,
-                productPrice: data.target.value,
-              })
+              if (data.target.value) {
+                onChangeFields({
+                  ...productUploadDetails,
+                  itemFor: data.target.value,
+                })
+              }
             }}
           />
           <CommonDropdown
@@ -344,9 +355,9 @@ export const UploadProduct = (props: UploadProductProps) => {
             }}
           />
           <Textarea
-            key={'productDescription'}
+            type='text'
             radius='none'
-            type='description'
+            key={'productDescription'}
             className='text-area-style'
             label={'Product Description'}
             value={productUploadDetails.productDescription}
@@ -360,10 +371,11 @@ export const UploadProduct = (props: UploadProductProps) => {
           />
           <CommonInputField
             required
-            key={'productLocation'}
-            type={'location'}
+            type={'text'}
+            maxLength={40}
             label={'Location'}
             size={SizeEnum.small}
+            key={'productLocation'}
             isError={errorFields.includes('productLocation')}
             value={productUploadDetails.productLocation}
             onChange={(data) => {

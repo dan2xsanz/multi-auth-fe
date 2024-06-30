@@ -27,6 +27,7 @@ export const CommonInputField = (props: InputFieldInterface) => {
     required,
     onChange,
     onKeyDown,
+    maxLength,
     ...rest
   } = props
   return (
@@ -35,9 +36,11 @@ export const CommonInputField = (props: InputFieldInterface) => {
         {...rest}
         size={size}
         type={type}
-        label={`${required ? '* ' : ''}${label} `}
-        value={value && value}
         radius='none'
+        style={style}
+        value={value && value}
+        maxLength={maxLength && maxLength}
+        label={`${required ? '* ' : ''}${label} `}
         onChange={(data) => onChange && onChange(data)}
         onKeyDown={(data) => onKeyDown && onKeyDown(data)}
         className={isError && !value ? 'input-field-error' : 'input-field'}
