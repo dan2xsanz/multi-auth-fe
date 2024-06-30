@@ -16,3 +16,16 @@ export const productConditionItems = [
   { key: '3', value: 3, label: 'Used-Good' },
   { key: '4', value: 4, label: 'Used-Fair' },
 ]
+
+export const productCurrencyType = [
+  { key: '1', value: 1, label: '₱ - Peso', display: `₱` },
+  { key: '2', value: 2, label: '$ - Dollar ', display: `$` },
+  { key: '3', value: 3, label: '€ - Euro ', display: `€` },
+  { key: '4', value: 4, label: '¥ - Yen ', display: `¥` },
+]
+
+export const itemForType = [
+  { key: '1', value: 1, label: 'Mens' },
+  { key: '2', value: 2, label: 'Womens' },
+  { key: '3', value: 3, label: 'Kids' },
+]

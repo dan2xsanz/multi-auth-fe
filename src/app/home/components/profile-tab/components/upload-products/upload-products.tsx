@@ -1,19 +1,20 @@
 'use client'
 import { UploadProductInterface, UploadProductValues } from './data'
 import { accountDetailStore, useStore } from '@/app/store'
+import { startSellingItemsOperation } from './operations'
 import { CommonModal } from '@/app/common/modal/modal'
 import { Image as AntdImage, Carousel } from 'antd'
-import { ResponseInterface } from '@/config/config'
+import { useEffect, useRef, useState } from 'react'
 import { Textarea } from '@nextui-org/react'
-import { useRef, useState } from 'react'
 import './upload-products.css'
 
 import {
-  openSuccessNotification,
+  openWarningNotification,
   openErrorNotification,
   productConditionItems,
   productCategoryItems,
-  CreateProductRequest,
+  productCurrencyType,
+  checkRequiredFields,
   ButtonColorTypeEnum,
   TypographySizeEnum,
   CommonInputField,
@@ -22,17 +23,26 @@ import {
   CommonDropdown,
   CommonButon,
   SizeEnum,
-  checkRequiredFields,
+  itemForType,
 } from '@/index'
 
 interface UploadProductProps {
   openAddNewProduct: boolean
+  setRefreshList: (data: boolean) => void
+  productUploadDetails: UploadProductInterface
   setOpendAddNewProduct: (data: boolean) => void
+  setProductUploadDetails: (data: UploadProductInterface) => void
 }
 
 export const UploadProduct = (props: UploadProductProps) => {
   // UPLOAD PRODUCTS PROPS
-  const { openAddNewProduct, setOpendAddNewProduct } = props
+  const {
+    setRefreshList,
+    openAddNewProduct,
+    productUploadDetails,
+    setOpendAddNewProduct,
+    setProductUploadDetails,
+  } = props
 
   // UPLOADED PRODUCT IMAGES
   const [productImages, setProductImages] = useState<any[]>([null])
@@ -48,10 +58,6 @@ export const UploadProduct = (props: UploadProductProps) => {
 
   // LOADING SCREEN STORE
   const { setIsLoading } = useStore()
-
-  // PRODUCT UPLOAD DETAILS
-  const [productUploadDetails, setProductUploadDetails] =
-    useState<UploadProductInterface>(UploadProductValues)
 
   // UPLOAD IMAGE HANDLER
   const uploadImageHandler = (e: any) => {
@@ -113,29 +119,13 @@ export const UploadProduct = (props: UploadProductProps) => {
 
   // ONCLICK START SELLING
   const startSellingItems = async () => {
-    setIsLoading(true)
-    try {
-      const response: ResponseInterface = await CreateProductRequest({
-        ...productUploadDetails,
-        accountMasterId: accountId,
-      })
-      // RETURN SUCCESS MESSAGE
-      if (response.isSuccess && response.resultData) {
-        openSuccessNotification({
-          description: 'Product uploaded successfully.',
-          placement: 'bottomRight',
-        })
-      }
-    } catch (error: any) {
-      // RETURN ERROR MESSAGE
-      openErrorNotification({
-        description: error.response?.data?.message || 'An error occurred',
-        placement: 'bottomRight',
-      })
-    } finally {
-      setIsLoading(false)
-      onClickCancelSellingItems()
-    }
+    startSellingItemsOperation(
+      accountId,
+      setIsLoading,
+      setRefreshList,
+      productUploadDetails,
+      onClickCancelSellingItems,
+    )
   }
 
   // VALIDATE REQUIRED FIELDS BEFORE SELLING
@@ -150,9 +140,14 @@ export const UploadProduct = (props: UploadProductProps) => {
         'image2',
         'image3',
         'image4',
+        'isSold',
+        'isDeleted',
+        'itemFor',
         'productCategory',
         'productCondition',
         'accountMasterId',
+        'productDiscount',
+        'productCurrency',
       ],
     )
     if (productUploadDetails.productCategory === '') {
@@ -163,9 +158,26 @@ export const UploadProduct = (props: UploadProductProps) => {
     }
     setErrorFields(errorFields)
     if (errorFields.length === 0) {
-      startSellingItems()
+      if (productImages[0] !== '') {
+        startSellingItems()
+      } else {
+        openWarningNotification({
+          description: 'Please upload images' || 'Warning occured',
+          placement: 'bottomRight',
+        })
+      }
     }
   }
+
+  useEffect(() => {
+    let productImagesEdit = [
+      productUploadDetails.image1,
+      productUploadDetails.image2,
+      productUploadDetails.image3,
+      productUploadDetails.image4,
+    ]
+    setProductImages(productImagesEdit)
+  }, [productUploadDetails])
 
   return (
     <CommonModal
@@ -227,8 +239,9 @@ export const UploadProduct = (props: UploadProductProps) => {
           />
           <CommonInputField
             required
+            type={'text'}
+            maxLength={40}
             key={'productName'}
-            type={'productName'}
             label={'Product Name'}
             size={SizeEnum.small}
             isError={errorFields.includes('productName')}
@@ -240,19 +253,71 @@ export const UploadProduct = (props: UploadProductProps) => {
               })
             }}
           />
-          <CommonInputField
+          <div style={{ display: 'flex', gap: '2px' }}>
+            <CommonDropdown
+              required
+              key={'productCurrency'}
+              items={productCurrencyType}
+              label={'Currency'}
+              defaultSelectedKeys={['2']}
+              style={{ width: '120px' }}
+              isError={errorFields.includes('productCurrency')}
+              selectedKeys={[productUploadDetails.productCurrency]}
+              onChange={(data) => {
+                if (data.target.value) {
+                  onChangeFields({
+                    ...productUploadDetails,
+                    productCurrency: data.target.value,
+                  })
+                }
+              }}
+            />
+            <CommonInputField
+              required
+              key={'productPrice'}
+              size={SizeEnum.small}
+              type={'number'}
+              label={'Product Price'}
+              style={{ width: '180px' }}
+              value={productUploadDetails.productPrice}
+              isError={errorFields.includes('productPrice')}
+              onChange={(data) => {
+                onChangeFields({
+                  ...productUploadDetails,
+                  productPrice:
+                    data.target.value === '' ? '0.00' : data.target.value,
+                })
+              }}
+            />
+            <CommonInputField
+              maxLength={2}
+              type={'number'}
+              label={'Discount %'}
+              size={SizeEnum.small}
+              key={'productDiscount'}
+              value={productUploadDetails.productDiscount}
+              onChange={(data) => {
+                onChangeFields({
+                  ...productUploadDetails,
+                  productDiscount: data.target.value,
+                })
+              }}
+            />
+          </div>
+          <CommonDropdown
             required
-            key={'productPrice'}
-            type={'productPrice'}
-            label={'Product Price'}
-            size={SizeEnum.small}
-            value={productUploadDetails.productPrice}
-            isError={errorFields.includes('productPrice')}
+            key={'itemFor'}
+            label={'Item for'}
+            items={itemForType}
+            defaultSelectedKeys={['1']}
+            selectedKeys={[productUploadDetails.itemFor]}
             onChange={(data) => {
-              onChangeFields({
-                ...productUploadDetails,
-                productPrice: data.target.value,
-              })
+              if (data.target.value) {
+                onChangeFields({
+                  ...productUploadDetails,
+                  itemFor: data.target.value,
+                })
+              }
             }}
           />
           <CommonDropdown
@@ -290,10 +355,9 @@ export const UploadProduct = (props: UploadProductProps) => {
             }}
           />
           <Textarea
-            maxLength={1000}
-            key={'productDescription'}
+            type='text'
             radius='none'
-            type='description'
+            key={'productDescription'}
             className='text-area-style'
             label={'Product Description'}
             value={productUploadDetails.productDescription}
@@ -307,10 +371,11 @@ export const UploadProduct = (props: UploadProductProps) => {
           />
           <CommonInputField
             required
-            key={'productLocation'}
-            type={'location'}
+            type={'text'}
+            maxLength={40}
             label={'Location'}
             size={SizeEnum.small}
+            key={'productLocation'}
             isError={errorFields.includes('productLocation')}
             value={productUploadDetails.productLocation}
             onChange={(data) => {

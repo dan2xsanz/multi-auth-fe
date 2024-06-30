@@ -1,275 +1,270 @@
 'use client'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
+import { getAllProductsOperations } from './operations'
+import { ProductDetailsModal } from './components'
+import { ProductListInterface } from './data'
+import { Image } from '@nextui-org/react'
+import { useStore } from '@/app/store'
 import './home-tab.css'
-import { Avatar, Image } from '@nextui-org/react'
+import {
+  ProductListFilterInterfaceValues,
+  getProductPriceAndCurrency,
+  getProductNameAndCondition,
+  ProductListInterfaceValues,
+  productConditionItems,
+  FilterHiglightedIcon,
+  productCategoryItems,
+  discountCalculator,
+  FilterIcon,
+} from '@/index'
+
 export const HomeTab = () => {
-  // Sample array of items
-  const items = [
-    'Apple',
-    'Banana',
-    'Orange',
-    'Grape',
-    'Apple',
-    'Banana',
-    'Orange',
-    'Grape',
-    'Apple',
-    'Banana',
-    'Orange',
-    'Grape',
-    'Apple',
-    'Banana',
-    'Orange',
-    'Grape',
-    'Apple',
-    'Banana',
-    'Orange',
-    'Grape',
-    'Orange',
-  ]
+  // PRODUCT LIST
+  const [productList, setProductList] = useState<ProductListInterface[]>()
 
-  const categoryList = [
-    'Shoes',
-    'Jackets',
-    'Hoodies & Sweatshirts',
-    'Trouser & Tights',
-    'Shorts',
-    'Tops & Shirts',
-    'Tracksuite',
-    'Socks',
-    'Accessories & Equipment',
-  ]
+  // SELECTED FILTER
+  const [selectedFilter, setSelectedFilter] =
+    useState<ProductListFilterInterfaceValues>(ProductListInterfaceValues)
 
-  const [hoveredIndex, setHoveredIndex] = useState<number | undefined>(
-    undefined,
-  )
+  // DISPLAY FILTER
+  const [displayFilter, setDisplayFilter] = useState<boolean>(true)
+
+  // SELECTED PRODUCT DETAILS
+  const [productDetails, setProductDetails] = useState<ProductListInterface>()
+
+  // LOADING SCREEN STORE
+  const { setIsLoading } = useStore()
+
+  // ONCLICK START SELLING
+  const getAllProducts = async () => {
+    getAllProductsOperations(setIsLoading, setProductList, selectedFilter)
+  }
+
+  // ON CLICK PRODUCT CATEGORY ITEM
+  const onClickProductCategoryItem = (item: { value: number | undefined }) => {
+    setSelectedFilter({
+      ...selectedFilter,
+      productCategory: item.value,
+    })
+  }
+
+  // ON CLICK PRODUCT CONDITION ITEM
+  const onClickProductConditionItem = (item: {
+    value: number | undefined
+  }): void => {
+    setSelectedFilter({
+      ...selectedFilter,
+      productCondition:
+        item.value === selectedFilter.productCondition ? undefined : item.value,
+    })
+  }
+
+  // ON CLICK MAIN CATEGIRY ITEM
+  const onClickMainCategory = (item: number | undefined) => {
+    setSelectedFilter({
+      ...selectedFilter,
+      mainCategory: item,
+    })
+  }
+
+  // REFRESH LIST EVENT HANDLER
+  useEffect(() => {
+    getAllProducts()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFilter])
 
   return (
     <Fragment>
-      <div className='market-place-left-container'>
-        <div className='title-container-1'>Products Available</div>
-        <div className='market-place-product-categories-container'>
-          <ul>
-            {categoryList.map((item, index) => (
-              <li className='category-item-style' key={index}>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div className='market-place-center-container'>
-        <div className='title-container-2-link'>
-          <div style={{ fontWeight: 'bold' }}>New & Featured</div>
-          <div>Men</div>
-          <div>Women</div>
-          <div>Kids</div>
-          <div>Sale</div>
-          <div>Best Sellers</div>
-        </div>
-        <div className='scrollable-center-container'>
-          {items.map((item: string, index: number) => (
-            <div key={item} className='image-main-container'>
-              <div
-                className='image-container'
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(undefined)}
-              >
-                <Image
-                  isZoomed
-                  className='image-style'
-                  radius='none'
-                  alt='NextUI hero Image with delay'
-                  src='https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8fb34fe2-cc91-4865-9fa6-79b3b26b8ac7/pegasus-41-road-running-shoes-RZm89S.png'
-                />
-              </div>
-              {hoveredIndex === index && (
-                <div
-                  key={item}
-                  className='image-detail-container'
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(undefined)}
-                >
-                  <div className='image-price-label-container'>₱100,595</div>
-                  <div className='image-name-label-container'>
-                    Sample Product Name
+      <Fragment>
+        {displayFilter && (
+          <div className='market-place-left-container'>
+            {/* PRODUCT CATEGORIES */}
+            <div className='market-place-product-categories-container'>
+              <ul>
+                {productCategoryItems.map((item, index) => (
+                  <li
+                    key={index}
+                    className={
+                      selectedFilter.productCategory &&
+                      selectedFilter.productCategory === item.value
+                        ? 'category-selected-style'
+                        : 'category-item-style'
+                    }
+                    onClick={() => onClickProductCategoryItem(item)}
+                  >
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* PRODUCT CONDITION */}
+            <div className='market-place-product-condition-container'>
+              <ul>
+                {productConditionItems.map((item, index) => (
+                  <li
+                    key={index}
+                    className={
+                      selectedFilter.productCondition &&
+                      selectedFilter.productCondition === item.value
+                        ? 'category-selected-style'
+                        : 'category-item-style'
+                    }
+                    onClick={() => onClickProductConditionItem(item)}
+                  >
+                    {item.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        <div className='market-place-center-container'>
+          <div className='title-container-2-link'>
+            <div
+              className={
+                selectedFilter.mainCategory && selectedFilter.mainCategory === 1
+                  ? 'title-category-selected-style'
+                  : 'title-category-style'
+              }
+              onClick={() => onClickMainCategory(1)}
+            >
+              Men
+            </div>
+            <div
+              className={
+                selectedFilter.mainCategory && selectedFilter.mainCategory === 2
+                  ? 'title-category-selected-style'
+                  : 'title-category-style'
+              }
+              onClick={() => onClickMainCategory(2)}
+            >
+              Women
+            </div>
+            <div
+              className={
+                selectedFilter.mainCategory && selectedFilter.mainCategory === 3
+                  ? 'title-category-selected-style'
+                  : 'title-category-style'
+              }
+              onClick={() => onClickMainCategory(3)}
+            >
+              Kids
+            </div>
+            <div
+              className={
+                selectedFilter.mainCategory && selectedFilter.mainCategory === 4
+                  ? 'title-category-selected-style'
+                  : 'title-category-style'
+              }
+              onClick={() => onClickMainCategory(4)}
+            >
+              Sale
+            </div>
+            <div
+              className={
+                selectedFilter.mainCategory && selectedFilter.mainCategory === 5
+                  ? 'title-category-selected-style'
+                  : 'title-category-style'
+              }
+              onClick={() => onClickMainCategory(5)}
+            >
+              Best Sellers
+            </div>
+            <div
+              className={
+                selectedFilter.mainCategory && selectedFilter.mainCategory === 6
+                  ? 'title-category-selected-style'
+                  : 'title-category-style'
+              }
+              onClick={() => onClickMainCategory(6)}
+            >
+              New & Featured
+            </div>
+            {displayFilter && (
+              <FilterHiglightedIcon onClick={() => setDisplayFilter(false)} />
+            )}
+            {!displayFilter && (
+              <FilterIcon onClick={() => setDisplayFilter(true)} />
+            )}
+          </div>
+          <div className='scrollable-center-container'>
+            {productList?.map(
+              (product: ProductListInterface, index: number) => (
+                <div key={index} className='image-main-container'>
+                  <div className='image-just-style-container'>
+                    {product.justIn && (
+                      <div className='image-just-in-container'>JUST IN</div>
+                    )}
                   </div>
-                  <div className='image-name-label-container'>
-                    Sample Supporting Details
+                  <div
+                    className='image-container'
+                    onClick={() => setProductDetails(product)}
+                  >
+                    <Image
+                      radius='none'
+                      isZoomed
+                      className='image-style'
+                      alt={`Product ${product.productName} Image`}
+                      src={`${`data:image/jpeg;base64,`}${product.image1}`}
+                    />
+                  </div>
+                  <div key={index} className='image-detail-container'>
+                    <div className='image-price-on-stock-container'>
+                      <div style={{ display: 'flex', gap: '5px' }}>
+                        {product.productDiscount && (
+                          <div className='image-price-label-container'>
+                            {discountCalculator(
+                              product.productPrice,
+                              product.productDiscount,
+                              product.productCurrency,
+                            )}
+                          </div>
+                        )}
+                        <div
+                          className={
+                            product.productDiscount
+                              ? 'image-price-label-container-discounted'
+                              : 'image-price-label-container'
+                          }
+                        >
+                          {getProductPriceAndCurrency(product)}
+                        </div>
+                        {product.productDiscount && (
+                          <div className='image-discount-label-container'>
+                            {`${product.productDiscount}%`}
+                          </div>
+                        )}
+                      </div>
+                      {product.isSold ? (
+                        <div className='image-out-of-stock-container'>
+                          OUT OF STOCK
+                        </div>
+                      ) : (
+                        <div className='image-on-stock-container'>ON STOCK</div>
+                      )}
+                    </div>
+                    <div className='image-name-label-container'>
+                      {getProductNameAndCondition(product).length >= 50
+                        ? getProductNameAndCondition(product).substring(0, 50) +
+                          '...'
+                        : getProductNameAndCondition(product)}
+                    </div>
+                    <div className='image-name-label-container'>
+                      {product.productLocation}
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className='market-place-right-container'>
-        <div className='title-container-1'>Online</div>
-        <div className='scrollable-right-container'>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
-          </div>
-          <div className='message-container'>
-            <Avatar
-              size='sm'
-              isBordered
-              color='success'
-              src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
-            />
-            <div className='message-name-container'>Dan Lester Sanz</div>
+              ),
+            )}
           </div>
         </div>
-      </div>
+      </Fragment>
+      {productDetails && (
+        <ProductDetailsModal
+          productDetails={productDetails}
+          setProductDetails={setProductDetails}
+        />
+      )}
     </Fragment>
   )
 }

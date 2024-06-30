@@ -29,6 +29,7 @@
 
   .header-icon-container{
     display: flex;
+    margin-top: 5px;
     gap: 15px;
    
   }
@@ -47,8 +48,6 @@
     font-size: 12px;
     font-weight:bold ;
     cursor: pointer;
-    border-bottom-width: 0.5px;
-    border-bottom-color: black;
   }
 
   .body-container{

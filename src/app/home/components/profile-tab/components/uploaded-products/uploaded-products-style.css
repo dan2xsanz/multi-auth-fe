@@ -32,8 +32,8 @@
 
 .displayed-image-container{
     height: 365px;
-    width: 380px;
-    background-color: black;
+    width: 340px;
+    /* background-color: black; */
 }
 
 .image-details{
@@ -49,35 +49,73 @@
 display:flex;
 justify-content: space-between;
 }
-
+ 
 .image-name-detail{
     font-size: 20px;
     font-weight: bold;
     margin-bottom: -5px;
 }
 
-.image-on-stock-container{
-    color:green;
-    font-weight: bold;
-    font-size: 20px;
+.profile-image-on-stock-container{
+    color: rgb(20, 231, 20);
+    font-weight: bolder;
+    font-size: 15px;
 }
 
-.image-out-stock-container{
-    color:red;
-    font-weight: bold;
-    font-size: 20px;
+.profile-image-out-stock-container{
+    color: rgb(245, 8, 8);
+    font-weight: bolder;
+    font-size: 15px;
 }
 
 .image-category{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+.image-price{
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.image-price-discounted{
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: rgb(87, 83, 83);
+    text-decoration: line-through
+}
+
+.image-price-discount{
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: green;
 }
 
 .image-description{
-    margin-top: 20px ;
-    max-height: 252px;
+    font-size: 14px;
+    max-height: 245px;
     overflow-wrap: break-word;
-    height: 252px;
+    height: 245px;
     overflow-y:auto;
     text-align: justify;
+    margin-bottom: 10px;
+    padding-right: 10px;
     
+}
+
+
+.action-buttons-container{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.action-button-style{
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.action-button-style:hover{
+   color: rgba(0, 0, 0, 0.438)
 }
