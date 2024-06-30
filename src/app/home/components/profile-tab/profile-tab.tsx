@@ -1,18 +1,18 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { AddIcon } from '@/app/common/icons'
-import {
-  UploadProduct,
-  UploadProductInterface,
-  UploadedProducts,
-} from './components'
-import { Image } from '@nextui-org/react'
+import { GetProductByFilterRequest, UpdateProductRequest } from '@/app/service'
 import React, { Fragment, useEffect, useState } from 'react'
-import './profile-tab.css'
+import { openErrorNotification } from '@/app/common/pop-up'
 import { accountDetailStore, useStore } from '@/app/store'
 import { ResponseInterface } from '@/config/config'
-import { GetProductByUserRequest } from '@/app/service'
-import { openErrorNotification } from '@/app/common/pop-up'
+import { AddIcon } from '@/app/common/icons'
+import { Image } from '@nextui-org/react'
+import './profile-tab.css'
+import {
+  UploadProductInterface,
+  UploadProductValues,
+  UploadedProducts,
+  UploadProduct,
+} from './components'
 import {
   ButtonColorTypeEnum,
   ButtonTypeEnum,
@@ -24,19 +24,27 @@ export const ProfileTab = () => {
   // OPEN PRODUCT MODAL
   const [openAddNewProduct, setOpendAddNewProduct] = useState<boolean>(false)
 
+  // PRODUCT LIST
   const [productList, setProductList] = useState<UploadProductInterface[]>()
 
-  // ACCOUNT ID
-  const { accountId } = accountDetailStore()
+  // PRODUCT UPLOAD DETAILS
+  const [productUploadDetails, setProductUploadDetails] =
+    useState<UploadProductInterface>(UploadProductValues)
+
+  // REFRESH LIST HANDLER
+  const [refreshList, setRefreshList] = useState<boolean>(false)
+
+  // ACCOUNT DETAILS
+  const { accountId, firstName, lastName } = accountDetailStore()
 
   // LOADING SCREEN STORE
-  const { setIsLoading } = useStore()
+  const { setIsLoading, isLoading } = useStore()
 
   // ONCLICK START SELLING
   const getAllProducts = async () => {
     setIsLoading(true)
     try {
-      const response: ResponseInterface = await GetProductByUserRequest({
+      const response: ResponseInterface = await GetProductByFilterRequest({
         accountId: accountId,
       })
       // RETURN SUCCESS MESSAGE
@@ -54,9 +62,34 @@ export const ProfileTab = () => {
     }
   }
 
+  // UDPATE SPEFIC PRODUCT HANDLER
+  const updateSpecificProduct = async (
+    currentProductDetails: UploadProductInterface,
+  ) => {
+    if (currentProductDetails.id !== undefined) {
+      setIsLoading(true)
+      try {
+        await UpdateProductRequest({
+          ...currentProductDetails,
+          accountMasterId: accountId,
+        })
+      } catch (error: any) {
+        // RETURN ERROR MESSAGE
+        openErrorNotification({
+          description: error.response?.data?.message || 'An error occurred',
+          placement: 'bottomRight',
+        })
+      } finally {
+        setRefreshList(true)
+        setIsLoading(false)
+      }
+    }
+  }
+
+  // REFRESH LIST EVENT HANDLER
   useEffect(() => {
     getAllProducts()
-  }, [openAddNewProduct])
+  }, [refreshList])
 
   return (
     <div className='main-profile-container'>
@@ -65,11 +98,11 @@ export const ProfileTab = () => {
           <Image
             radius='full'
             alt='NextUI hero Image with delay'
-            src='https://scontent.filo1-1.fna.fbcdn.net/v/t39.30808-6/447232753_822138273124293_1427859901252616171_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGy1iW-53mgIpBdjwlBFWgI9aLNvUZSo4r1os29RlKjisel-M7o6K4ye6XTyoU1WCiXq_wQrZMtBRF16GdIHaqs&_nc_ohc=JwmXfGhaXjAQ7kNvgEAG4dK&_nc_ht=scontent.filo1-1.fna&oh=00_AYAvwqKWm8GJgt3XdpRj7afBw5PoAc_fQ6S1dT3HJhxxwA&oe=666B73EA'
+            src='https://static.thenounproject.com/png/5034901-200.png'
           />
         </div>
         <div className='main-profile-name-membership'>
-          <div className='main-profile-name-container'>Dan Lester Sanz</div>
+          <div className='main-profile-name-container'>{`${firstName} ${lastName}`}</div>
           <div className='main-profile-membership'>
             SNZ. Member Since October 2024
           </div>
@@ -91,37 +124,44 @@ export const ProfileTab = () => {
         <></>
       )}
       <div className='listing-container'>
-        {!productList?.length ? (
+        {!productList?.length && !isLoading && (
           <div
             className='add-new-listing-container'
             onClick={() => setOpendAddNewProduct(true)}
           >
             <AddIcon />
-            <div>When you start selling, your listings will appear here.</div>
+            <div style={{ textAlign: 'center' }}>
+              When you start selling, your listings will appear here.
+            </div>
           </div>
-        ) : (
+        )}
+        {productList?.length && !isLoading && (
           <Fragment>
             {productList?.map((product, index) => (
               <UploadedProducts
                 key={index}
-                image1={`${`data:image/jpeg;base64,`}${product.image1}`}
-                image2={`${`data:image/jpeg;base64,`}${product.image2}`}
-                image3={`${`data:image/jpeg;base64,`}${product.image3}`}
-                image4={`${`data:image/jpeg;base64,`}${product.image4}`}
-                productName={product.productName}
-                productPrice={product.productPrice}
-                productCategory={product.productCategory}
-                productCondition={product.productCondition}
-                productDescription={product.productDescription}
-                productLocation={product.productLocation}
+                productUploadDetailsResponse={product}
+                onClickEditProduct={(data: UploadProductInterface) => {
+                  setProductUploadDetails(data)
+                  setOpendAddNewProduct(true)
+                }}
+                onClickMarkAsSold={(data: UploadProductInterface) => {
+                  updateSpecificProduct(data)
+                }}
+                onClickDeleteProduct={(data: UploadProductInterface) => {
+                  updateSpecificProduct(data)
+                }}
               />
             ))}
           </Fragment>
         )}
       </div>
       <UploadProduct
+        setRefreshList={setRefreshList}
         openAddNewProduct={openAddNewProduct}
+        productUploadDetails={productUploadDetails}
         setOpendAddNewProduct={setOpendAddNewProduct}
+        setProductUploadDetails={setProductUploadDetails}
       />
     </div>
   )

@@ -3,7 +3,7 @@ import { accountDetailStore, logInStore, useStore } from '../store'
 import { ForgotPassword, SignUpAccount } from './components'
 import { loginDefaultValue, LoginInterface } from './data'
 import { ResponseInterface } from '@/config/config'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { checkRequiredFields } from '../utils'
 import { useRouter } from 'next/navigation'
 import { LoginRequest } from '../service'
@@ -28,8 +28,16 @@ export default function LoginPage() {
   // LOADING SCREEN STORE
   const { setAccountId, setFirstName, setLastName, setEmail } =
     accountDetailStore()
+
   const { setIsLoading } = useStore()
-  const { setIsLogIn } = logInStore()
+  const { resetLoginState, setIsLogIn } = logInStore()
+
+  const { resetAccountDetailsState } = accountDetailStore()
+
+  useEffect(() => {
+    resetLoginState()
+    resetAccountDetailsState()
+  }, [])
 
   // PATH ROUTHER
   const router = useRouter()

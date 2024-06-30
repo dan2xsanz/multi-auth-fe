@@ -1,0 +1,105 @@
+.modal-body-container{
+    margin-top: 15px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+ }
+
+ .modal-image-container{
+    width: 50%;
+    height: 440px;
+    background-color: rgba(0, 0, 0, 0.055);
+ }
+
+ 
+ .carousel-content-container{
+    height:440px ;
+    line-height: 160px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.137);
+ }
+
+ 
+ .modal-image-container{
+    width: 50%;
+    height: 440px;
+    background-color: rgba(0, 0, 0, 0.055);
+ }
+
+ .carousel-content-container{
+    height:440px ;
+    line-height: 160px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.137);
+ }
+
+ .snz-logo-container{
+    height:440px ;
+    color: rgba(0, 0, 0, 0.163);
+    line-height: 440px;
+    text-align: center;
+    font-size: 70px;
+    font-weight: bolder;
+    user-select: none;
+ }
+
+ .product-detail-container{
+    height: 440px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 440px;
+    overflow-y: auto;
+    gap: 5px;
+ }
+ 
+.image-price{
+   font-size: 18px;
+   font-weight: bold;
+   margin-bottom: 10px;
+}
+
+.image-price-discounted{
+   font-weight: bold;
+   font-size: 18px;
+   margin-bottom: 10px;
+   color: rgb(87, 83, 83);
+   text-decoration: line-through
+}
+
+.image-price-discount{
+   font-weight: bold;
+   font-size: 18px;
+   margin-bottom: 10px;
+   color: green;
+}
+
+.product-details-image-description{
+   font-size: 12px;
+   max-height: 300px;
+   padding-right: 15px;
+   overflow-wrap: break-word;
+   height: 300px;
+   overflow-y:auto;
+   text-align: justify;
+   margin-bottom: 10px;
+   
+}
+
+.product-details-reaction-container{
+   height: 30px;
+   width: 100%;
+   margin-top: -30px;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+}
+
+.product-number-reaction-container{
+   gap: 3px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 10px;
+}

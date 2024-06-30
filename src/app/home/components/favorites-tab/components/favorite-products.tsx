@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react'
-import { Image as AntdImage } from 'antd'
-import './uploaded-products-style.css'
+'use client'
 import {
   UploadProductInterface,
   productConditionItems,
@@ -9,24 +7,15 @@ import {
   discountCalculator,
   itemForType,
 } from '@/index'
+import { useEffect, useState } from 'react'
+import { Image as AntdImage } from 'antd'
 
-interface UploadedProductsProps {
-  id?: number | undefined
-  key?: number | undefined
+interface FavoritesProductsInterface {
   productUploadDetailsResponse: UploadProductInterface
-  onClickMarkAsSold: (data: UploadProductInterface) => void
-  onClickEditProduct: (data: UploadProductInterface) => void
-  onClickDeleteProduct: (data: UploadProductInterface) => void
 }
 
-export const UploadedProducts = (props: UploadedProductsProps) => {
-  const {
-    onClickMarkAsSold,
-    onClickEditProduct,
-    onClickDeleteProduct,
-    productUploadDetailsResponse,
-  } = props
-
+export const FavoritesProducts = (props: FavoritesProductsInterface) => {
+  const { productUploadDetailsResponse } = props
   // PRODUCT UPLOAD DETAILS
   const [productUploadDetails, setProductUploadDetails] =
     useState<UploadProductInterface>(productUploadDetailsResponse)
@@ -35,29 +24,6 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
   const [mainImageSrc, setMainImageSrc] = useState<string | undefined>(
     productUploadDetails.image1,
   )
-
-  // ON CLICK MARK AS SOLD
-  const onClickMarkAsSoldHandler = () => {
-    let maskAsSoldProductDetails: UploadProductInterface = {
-      ...productUploadDetails,
-      isSold: !productUploadDetails.isSold,
-    }
-    onClickMarkAsSold(maskAsSoldProductDetails)
-  }
-
-  // ON CLICK DELETE BUTTON
-  const onClickMarkAsDeletedHandler = () => {
-    let maskAsDeletedProductDetails: UploadProductInterface = {
-      ...productUploadDetails,
-      isDeleted: true,
-    }
-    onClickDeleteProduct(maskAsDeletedProductDetails)
-  }
-
-  // ON CLICK EDIT BUTTON
-  const onClickEditHandler = () => {
-    onClickEditProduct(productUploadDetails)
-  }
 
   // FIND PRODUCT NAME AND CONDITION
   const getProductNameAndCondition = (
@@ -89,7 +55,6 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
     const category = productCategoryItems.find(
       (data) => data.key === categoryKey,
     )
-
     return category ? category.label : ''
   }
 
@@ -209,24 +174,6 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
         </div>
         <div className='image-description'>
           {productUploadDetails.productDescription}
-        </div>
-
-        <div className='action-buttons-container'>
-          <div
-            className='action-button-style'
-            onClick={onClickMarkAsSoldHandler}
-          >
-            {`${productUploadDetails.isSold ? 'Mark as On Stock' : 'Mark as Out of Stock'} `}
-          </div>
-          <div className='action-button-style' onClick={onClickEditHandler}>
-            Edit
-          </div>
-          <div
-            className='action-button-style'
-            onClick={onClickMarkAsDeletedHandler}
-          >
-            Delete
-          </div>
         </div>
       </div>
     </div>

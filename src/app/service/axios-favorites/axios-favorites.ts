@@ -1,15 +1,15 @@
+import { FavoritesInterface } from '@/app/home/components/home-tab'
 import { ResponseInterface } from '@/config/config'
-import { ProductListFilterInterfaceValues, UploadProductInterface } from '@/index'
 import { REQUEST_URL } from '@/properties'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 
-export const CreateProductRequest = (
-  data: UploadProductInterface,
+export const AddToMyFavorites = (
+  data: FavoritesInterface,
 ): Promise<ResponseInterface> => {
   return new Promise((resolve, reject) => {
     axios
       .post<ResponseInterface>(
-        `${REQUEST_URL}/master-record/product-master/create-product`,
+        `${REQUEST_URL}/master-record/favorites/add-favorite`,
         data,
       )
       .then(function (response: AxiosResponse<ResponseInterface>) {
@@ -21,13 +21,13 @@ export const CreateProductRequest = (
   })
 }
 
-export const UpdateProductRequest = (
-  data: UploadProductInterface,
+export const DeleteMyFavorites = (
+  data: FavoritesInterface,
 ): Promise<ResponseInterface> => {
   return new Promise((resolve, reject) => {
     axios
-      .post<ResponseInterface>(
-        `${REQUEST_URL}/master-record/product-master/update-product`,
+      .put<ResponseInterface>(
+        `${REQUEST_URL}/master-record/favorites/delete-favorite`,
         data,
       )
       .then(function (response: AxiosResponse<ResponseInterface>) {
@@ -39,14 +39,13 @@ export const UpdateProductRequest = (
   })
 }
 
-export const GetProductByFilterRequest = (
-  data: ProductListFilterInterfaceValues,
+export const ListOfFavorites = (
+  productMasterId: number | undefined,
 ): Promise<ResponseInterface> => {
   return new Promise((resolve, reject) => {
     axios
       .post<ResponseInterface>(
-        `${REQUEST_URL}/master-record/product-master/product-by-filter`,
-        data,
+        `${REQUEST_URL}/master-record/favorites/favorites-by-product/${productMasterId}`,
       )
       .then(function (response: AxiosResponse<ResponseInterface>) {
         resolve(response.data)
@@ -57,11 +56,13 @@ export const GetProductByFilterRequest = (
   })
 }
 
-export const GetAllProductsRequest = (): Promise<ResponseInterface> => {
+export const ListOfFavoritesByAccount = (
+  accountMasterId: number | undefined,
+): Promise<ResponseInterface> => {
   return new Promise((resolve, reject) => {
     axios
       .post<ResponseInterface>(
-        `${REQUEST_URL}/master-record/product-master/products`,
+        `${REQUEST_URL}/master-record/favorites/favorites-by-account/${accountMasterId}`,
       )
       .then(function (response: AxiosResponse<ResponseInterface>) {
         resolve(response.data)
