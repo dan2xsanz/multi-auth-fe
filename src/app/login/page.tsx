@@ -14,6 +14,7 @@ import {
   CommonLinkButton,
   CommonTypography,
   CommonButon,
+  SnzLogo,
 } from '../common'
 import {
   ButtonColorTypeEnum,
@@ -123,7 +124,16 @@ export default function LoginPage() {
   }
 
   return (
-    <Fragment>
+    <div className='flex-center-gap'>
+      {!isOpenSignUpForm && !isOpenForgotPass && (
+        <Fragment>
+          <div>
+            <div className='centered-bold-text'>SNZ.</div>
+            <div className='marketplace-text'>MARKETPLACE</div>
+          </div>
+          <div className='vertical-line' />
+        </Fragment>
+      )}
       <div className='login-form-container'>
         {!isOpenSignUpForm && !isOpenForgotPass && (
           <div className='login-fields-container'>
@@ -208,13 +218,13 @@ export default function LoginPage() {
             </div>
           </div>
         )}
-        {isOpenSignUpForm && (
-          <SignUpAccount setOpenSignUpForm={setOpenSignUpForm} />
-        )}
-        {isOpenForgotPass && (
-          <ForgotPassword setOpenForgotPass={setOpenForgotPass} />
-        )}
       </div>
-    </Fragment>
+      {isOpenSignUpForm && (
+        <SignUpAccount setOpenSignUpForm={setOpenSignUpForm} />
+      )}
+      {isOpenForgotPass && (
+        <ForgotPassword setOpenForgotPass={setOpenForgotPass} />
+      )}
+    </div>
   )
 }
