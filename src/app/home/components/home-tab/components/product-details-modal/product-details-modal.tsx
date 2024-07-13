@@ -9,6 +9,7 @@ import {
   deleteMyFavoritesOperation,
   addToMyFavoritesOperation,
   listOfFavoritesOperation,
+  getAllCommentsOperation,
 } from './operations'
 import {
   getProductPriceAndCurrency,
@@ -41,6 +42,8 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
     FavoritesStateDefaultValue,
   )
 
+  const [totalCommentsState, setTotalCommentState] = useState<number>(0)
+
   // COMMENT SECTION STATE
   const [commentSection, openCommentSection] = useState<boolean>(false)
 
@@ -61,13 +64,19 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
   }, [productDetails])
 
   useEffect(() => {
-    if (productDetails.id)
+    if (productDetails.id) {
       listOfFavoritesOperation(
         accountId,
         setIsLoading,
         setFavoriteState,
         productDetails.id,
       )
+      getAllCommentsOperation(
+        setIsLoading,
+        productDetails.id,
+        setTotalCommentState,
+      )
+    }
   }, [productDetails.id, favoriteState.isFavorite, accountId, setIsLoading])
 
   return (
@@ -143,7 +152,21 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
                 </div>
               </Fragment>
             )}
-            {commentSection && <CommentSection />}
+            {commentSection && (
+              <CommentSection
+                productMasterId={productDetails.id}
+                style={{
+                  width: '480px',
+                  height: '100%',
+                  display: 'grid',
+                  marginBottom: '30px',
+                  padding: '-1px',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                  overflowX: 'hidden',
+                }}
+              />
+            )}
           </div>
           <div className='product-details-reaction-container'>
             <div className='product-number-reaction-container'>
@@ -182,7 +205,7 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
               <CommentsIcon
                 onClick={() => openCommentSection(!commentSection)}
               />
-              <label>4K</label>
+              <label>{totalCommentsState}</label>
             </div>
           </div>
         </div>

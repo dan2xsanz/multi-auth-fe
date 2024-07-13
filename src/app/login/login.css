@@ -10,6 +10,39 @@
     background-color: #FBF9FA;
 }
 
+.flex-center-gap {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+
+.centered-bold-text {
+    display: grid;
+    justify-items: center;
+    color: black;
+    font-size: 150px;
+    margin-bottom:-50px;
+    font-weight: bolder;
+}
+
+.marketplace-text {
+    display: grid;
+    justify-items: center;
+    color: black;
+    letter-spacing: 20px;
+    background-color:#FBF9FA;
+    font-weight: bold;
+}
+  
+.vertical-line {
+    height: 450px;
+    width: 1px;
+    background-color: black;
+    margin-top: 50px;
+  }
+  
+
 .overlay {
     position: absolute;
     top: 0;
