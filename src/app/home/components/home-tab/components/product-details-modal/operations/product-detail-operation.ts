@@ -1,4 +1,8 @@
-import { openErrorNotification, openInfoNotification } from '@/index'
+import {
+  openErrorNotification,
+  openInfoNotification,
+  TotalComments,
+} from '@/index'
 import { ProductListInterface } from '../../../data'
 import { ResponseInterface } from '@/config/config'
 import { FavoritesStateInterface } from '../data'
@@ -85,6 +89,31 @@ export const listOfFavoritesOperation = async (
               isFavorite: false,
             })
       }
+    }
+  } catch (error: any) {
+    // RETURN ERROR MESSAGE
+    openErrorNotification({
+      description: error.response?.data?.message || 'An error occurred',
+      placement: 'bottomRight',
+    })
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+export const getAllCommentsOperation = async (
+  setIsLoading: (data: boolean) => void,
+  productMasterId: number | undefined,
+  setTotalComments: (data: number) => void,
+) => {
+  setIsLoading(true)
+  try {
+    const response: ResponseInterface = await TotalComments({
+      productMasterId: productMasterId,
+    })
+    // RETURN SUCCESS MESSAGE
+    if (response.isSuccess && response.resultData) {
+      setTotalComments(response.resultData)
     }
   } catch (error: any) {
     // RETURN ERROR MESSAGE
