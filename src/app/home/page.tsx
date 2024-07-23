@@ -1,6 +1,7 @@
 'use client'
+import webSocketServiceInstance from '../service/web-socket-service/websocketService'
+import React, { Fragment, useEffect, useState } from 'react'
 import { ProfileTab } from './components/profile-tab'
-import React, { Fragment, useState } from 'react'
 import { SnzLogo } from '../common/logo/snz-logo'
 import { HomeTab } from './components/home-tab'
 import { accountDetailStore } from '../store'
@@ -9,7 +10,7 @@ import { FavoritesTab } from '@/index'
 
 export default function HomePage() {
   // ACOUNT MASTER DETAILS
-  const { firstName, lastName } = accountDetailStore()
+  const { firstName, lastName, accountId } = accountDetailStore()
 
   const [headerButton, setHeaderButton] = useState<number>(1)
 
@@ -20,6 +21,10 @@ export default function HomePage() {
   const onClickLogoutHandler = () => {
     router.push('/login')
   }
+
+  useEffect(() => {
+    webSocketServiceInstance
+  }, [])
 
   return (
     <Fragment>
@@ -78,7 +83,7 @@ export default function HomePage() {
       </div>
       <div className='body-container'>
         {headerButton === 1 && <HomeTab />}
-        {headerButton === 2 && <FavoritesTab/>}
+        {headerButton === 2 && <FavoritesTab />}
         {headerButton === 3 && <></>}
         {headerButton === 4 && <></>}
         {headerButton === 5 && <ProfileTab />}

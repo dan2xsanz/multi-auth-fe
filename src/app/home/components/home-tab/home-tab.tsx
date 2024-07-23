@@ -18,7 +18,6 @@ import {
   FilterIcon,
 } from '@/index'
 
-
 export const HomeTab = () => {
   // PRODUCT LIST
   const [productList, setProductList] = useState<ProductListInterface[]>()
@@ -71,9 +70,7 @@ export const HomeTab = () => {
   // REFRESH LIST EVENT HANDLER
   useEffect(() => {
     getAllProducts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFilter])
-
 
   return (
     <Fragment>
