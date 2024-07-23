@@ -25,6 +25,7 @@ import {
   CommentSection,
 } from '@/index'
 import { FavoritesStateDefaultValue, FavoritesStateInterface } from './data'
+import websocketService from '@/app/service/web-socket-service/websocketService'
 
 interface ProductDetailsModalProps {
   setProductDetails: (data: ProductListInterface | undefined) => void
@@ -195,6 +196,10 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
                       accountId,
                       setIsLoading,
                       productDetails,
+                    )
+                    websocketService.sendAddFavoriteMessage(
+                      productDetails.accountMasterId,
+                      'Someone added your product to favorites!',
                     )
                   }}
                 />
