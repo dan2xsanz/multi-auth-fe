@@ -4,4 +4,5 @@ export * from './axios-account'
 export * from './axios-otp'
 export * from './axios-forgot-password'
 export * from './axios-product'
-export * from "./axios-comment"
+export * from './axios-comment'
+export * from './web-socket-service'
