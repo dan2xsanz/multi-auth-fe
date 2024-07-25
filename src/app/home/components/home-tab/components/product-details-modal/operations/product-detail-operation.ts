@@ -11,16 +11,12 @@ import {
   AddToMyFavorites,
   ListOfFavorites,
 } from '@/app/service/axios-favorites'
-import { accountDetailStore } from '@/app/store'
 
 export const addToMyFavoritesOperation = async (
   accountId: number | undefined,
   setIsLoading: (data: boolean) => void,
   productDetails: ProductListInterface,
 ) => {
-
-  
-  const { firstName, lastName } = accountDetailStore()
   setIsLoading(true)
   try {
     const response: ResponseInterface = await AddToMyFavorites({

@@ -1,8 +1,10 @@
 'use client'
+import websocketService from '@/app/service/web-socket-service/websocket-service'
+import { FavoritesStateDefaultValue, FavoritesStateInterface } from './data'
+import React, { Fragment, useEffect, useState } from 'react'
 import { accountDetailStore, useStore } from '@/app/store'
 import { CommonModal } from '@/app/common/modal/modal'
 import { Image as AntdImage, Carousel } from 'antd'
-import React, { Fragment, useEffect, useState } from 'react'
 import { ProductListInterface } from '../../data'
 import './product-details-modal.css'
 import {
@@ -14,6 +16,7 @@ import {
 import {
   getProductPriceAndCurrency,
   getProductNameAndCondition,
+  HighlightedHeartIcon,
   getProductCategory,
   TypographySizeEnum,
   discountCalculator,
@@ -21,11 +24,8 @@ import {
   CommonTypography,
   CommentsIcon,
   HeartIcon,
-  HighlightedHeartIcon,
   CommentSection,
 } from '@/index'
-import { FavoritesStateDefaultValue, FavoritesStateInterface } from './data'
-import websocketService from '@/app/service/web-socket-service/websocketService'
 
 interface ProductDetailsModalProps {
   setProductDetails: (data: ProductListInterface | undefined) => void
@@ -198,8 +198,8 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
                       productDetails,
                     )
                     websocketService.sendAddFavoriteMessage(
-                      productDetails.accountMasterId,
-                      'Someone added your product to favorites!',
+                    productDetails.accountMasterId,
+                    'Someone added your product to favorites!',
                     )
                   }}
                 />
