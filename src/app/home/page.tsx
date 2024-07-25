@@ -1,5 +1,5 @@
 'use client'
-import webSocketServiceInstance from '../service/web-socket-service/websocketService'
+import websocketService from '../service/web-socket-service/websocket-service'
 import React, { Fragment, useEffect, useState } from 'react'
 import { ProfileTab } from './components/profile-tab'
 import { SnzLogo } from '../common/logo/snz-logo'
@@ -23,8 +23,8 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    webSocketServiceInstance
-  }, [])
+    websocketService.setCurrentLoggedInUser(accountId)
+  }, [accountId, headerButton])
 
   return (
     <Fragment>
