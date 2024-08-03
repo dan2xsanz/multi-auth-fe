@@ -1,1 +1,1 @@
-export * from './websocket-service'
+export * from './web-socket-service'

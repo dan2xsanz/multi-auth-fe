@@ -4,6 +4,7 @@
     gap: 10px;
     padding: 10px;
     border-bottom-width: 1px;
+    cursor: pointer;
 }
 
 .images-container{

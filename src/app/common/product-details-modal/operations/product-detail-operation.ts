@@ -1,11 +1,14 @@
+import { ProductListInterface } from '@/app/home/components/home-tab/data'
+import { FavoritesStateInterface, HeartReactStateInterface } from '../data'
+import { ResponseInterface } from '@/config/config'
 import {
+  DeleteFromMyHeartReacted,
   openErrorNotification,
   openInfoNotification,
+  AddToHeartReacted,
+  ListOfHeartReacts,
   TotalComments,
 } from '@/index'
-import { ProductListInterface } from '../../../data'
-import { ResponseInterface } from '@/config/config'
-import { FavoritesStateInterface } from '../data'
 import {
   DeleteMyFavorites,
   AddToMyFavorites,
@@ -87,6 +90,88 @@ export const listOfFavoritesOperation = async (
           : setFavoriteState({
               totalFavorites: arrayOfUser.length,
               isFavorite: false,
+            })
+      }
+    }
+  } catch (error: any) {
+    // RETURN ERROR MESSAGE
+    openErrorNotification({
+      description: error.response?.data?.message || 'An error occurred',
+      placement: 'bottomRight',
+    })
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+export const addToMyHeartedProductOperation = async (
+  accountId: number | undefined,
+  setIsLoading: (data: boolean) => void,
+  productDetails: ProductListInterface,
+) => {
+  setIsLoading(true)
+  try {
+    const response: ResponseInterface = await AddToHeartReacted({
+      isHearted: true,
+      productMasterId: productDetails.id,
+      accountMasterId: accountId,
+    })
+  } catch (error: any) {
+    // RETURN ERROR MESSAGE
+    openErrorNotification({
+      description: error.response?.data?.message || 'An error occurred',
+      placement: 'bottomRight',
+    })
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+export const deleteHeartedProductOperation = async (
+  accountId: number | undefined,
+  setIsLoading: (data: boolean) => void,
+  productDetails: ProductListInterface,
+) => {
+  setIsLoading(true)
+  try {
+    const response: ResponseInterface = await DeleteFromMyHeartReacted({
+      isHearted: false,
+      productMasterId: productDetails.id,
+      accountMasterId: accountId,
+    })
+  } catch (error: any) {
+    // RETURN ERROR MESSAGE
+    openErrorNotification({
+      description: error.response?.data?.message || 'An error occurred',
+      placement: 'bottomRight',
+    })
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+export const listOfHeartedProductOperation = async (
+  accountId: number | undefined,
+  setIsLoading: (data: boolean) => void,
+  setHeartReactState: (data: HeartReactStateInterface) => void,
+  productMasterId: number | undefined,
+) => {
+  setIsLoading(true)
+  try {
+    const response: ResponseInterface = await ListOfHeartReacts(productMasterId)
+    // RETURN SUCCESS MESSAGE
+    if (response.isSuccess) {
+      // TODO HERE
+      if (response.resultData.length >= 0) {
+        let arrayOfUser: number[] = response.resultData
+        response.resultData.includes(accountId)
+          ? setHeartReactState({
+              totalHeartReact: arrayOfUser.length,
+              isHearted: true,
+            })
+          : setHeartReactState({
+              totalHeartReact: arrayOfUser.length,
+              isHearted: false,
             })
       }
     }

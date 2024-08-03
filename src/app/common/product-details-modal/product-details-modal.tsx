@@ -1,31 +1,43 @@
 'use client'
-import websocketService from '@/app/service/web-socket-service/websocket-service'
-import { FavoritesStateDefaultValue, FavoritesStateInterface } from './data'
+import { NotificationInterface } from '@/app/service/web-socket-service/web-socket-service-interface'
+import websocketService from '@/app/service/web-socket-service/web-socket-service'
+import { ProductListInterface } from '../../home/components/home-tab/data'
 import React, { Fragment, useEffect, useState } from 'react'
 import { accountDetailStore, useStore } from '@/app/store'
 import { CommonModal } from '@/app/common/modal/modal'
 import { Image as AntdImage, Carousel } from 'antd'
-import { ProductListInterface } from '../../data'
 import './product-details-modal.css'
-import {
-  deleteMyFavoritesOperation,
-  addToMyFavoritesOperation,
-  listOfFavoritesOperation,
-  getAllCommentsOperation,
-} from './operations'
 import {
   getProductPriceAndCurrency,
   getProductNameAndCondition,
+  HighlightedFavoriteIcon,
   HighlightedHeartIcon,
   getProductCategory,
   TypographySizeEnum,
   discountCalculator,
   getProductItemFor,
   CommonTypography,
+  WebSocketTopic,
+  CommentSection,
+  FavoriteIcon,
   CommentsIcon,
   HeartIcon,
-  CommentSection,
 } from '@/index'
+import {
+  FavoritesStateDefaultValue,
+  FavoritesStateInterface,
+  HeartReactStateDefaultValue,
+  HeartReactStateInterface,
+} from './data'
+import {
+  addToMyFavoritesOperation,
+  addToMyHeartedProductOperation,
+  deleteHeartedProductOperation,
+  deleteMyFavoritesOperation,
+  getAllCommentsOperation,
+  listOfFavoritesOperation,
+  listOfHeartedProductOperation,
+} from './operations'
 
 interface ProductDetailsModalProps {
   setProductDetails: (data: ProductListInterface | undefined) => void
@@ -43,6 +55,11 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
     FavoritesStateDefaultValue,
   )
 
+  // HEART REACT STATE
+  const [heartReactState, setHeartReactState] =
+    useState<HeartReactStateInterface>(HeartReactStateDefaultValue)
+
+  // TOTAL COMMENTS STATE
   const [totalCommentsState, setTotalCommentState] = useState<number>(0)
 
   // COMMENT SECTION STATE
@@ -52,8 +69,53 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
   const { setIsLoading } = useStore()
 
   // ACCOUNT DETAILS
-  const { accountId } = accountDetailStore()
+  const { accountId, firstName, lastName } = accountDetailStore()
 
+  // REMOVE PRODUCT TO MY FAVORITES
+  const removeToMyFavorites = () => {
+    setFavoriteState({
+      ...favoriteState,
+      isFavorite: !favoriteState.isFavorite,
+    })
+    deleteMyFavoritesOperation(accountId, setIsLoading, productDetails)
+  }
+
+  // ADD PRODUCT BTO MY FAVORITES
+  const addToMyFavorites = () => {
+    setFavoriteState({
+      ...favoriteState,
+      isFavorite: !favoriteState.isFavorite,
+    })
+    addToMyFavoritesOperation(accountId, setIsLoading, productDetails)
+  }
+
+  // ADD PRODUCT AS HEARTED
+  const addToMyHearted = () => {
+    let notification: NotificationInterface = {
+      senderId: accountId,
+      subject: productDetails.productName,
+      notificationTopic: WebSocketTopic.HeartReact,
+      receiverId: productDetails.accountMasterId,
+      message: `${firstName} ${lastName} Loves your Product`,
+    }
+    websocketService.sendNotificationMessage(notification)
+    setHeartReactState({
+      ...heartReactState,
+      isHearted: !heartReactState.isHearted,
+    })
+    addToMyHeartedProductOperation(accountId, setIsLoading, productDetails)
+  }
+
+  // REMOVE PRODUUCT AS HEARTED
+  const removeToMyHeartedProduct = () => {
+    setHeartReactState({
+      ...heartReactState,
+      isHearted: !heartReactState.isHearted,
+    })
+    deleteHeartedProductOperation(accountId, setIsLoading, productDetails)
+  }
+
+  // SET PRODUCT DETAIL IMAGES
   useEffect(() => {
     let productImagesEdit = [
       `${`data:image/jpeg;base64,`}${productDetails?.image1}`,
@@ -64,6 +126,7 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
     setProductImages(productImagesEdit)
   }, [productDetails])
 
+  // COUNT THE NUMBER OF REACTS, COMMENTS
   useEffect(() => {
     if (productDetails.id) {
       listOfFavoritesOperation(
@@ -72,13 +135,25 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
         setFavoriteState,
         productDetails.id,
       )
+      listOfHeartedProductOperation(
+        accountId,
+        setIsLoading,
+        setHeartReactState,
+        productDetails.id,
+      )
       getAllCommentsOperation(
         setIsLoading,
         productDetails.id,
         setTotalCommentState,
       )
     }
-  }, [productDetails.id, favoriteState.isFavorite, accountId, setIsLoading])
+  }, [
+    accountId,
+    setIsLoading,
+    productDetails.id,
+    favoriteState.isFavorite,
+    heartReactState.isHearted,
+  ])
 
   return (
     <CommonModal
@@ -172,39 +247,18 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
           <div className='product-details-reaction-container'>
             <div className='product-number-reaction-container'>
               {favoriteState.isFavorite ? (
-                <HighlightedHeartIcon
-                  onClick={() => {
-                    setFavoriteState({
-                      ...favoriteState,
-                      isFavorite: !favoriteState.isFavorite,
-                    })
-                    deleteMyFavoritesOperation(
-                      accountId,
-                      setIsLoading,
-                      productDetails,
-                    )
-                  }}
-                />
+                <HighlightedFavoriteIcon onClick={removeToMyFavorites} />
               ) : (
-                <HeartIcon
-                  onClick={() => {
-                    setFavoriteState({
-                      ...favoriteState,
-                      isFavorite: !favoriteState.isFavorite,
-                    })
-                    addToMyFavoritesOperation(
-                      accountId,
-                      setIsLoading,
-                      productDetails,
-                    )
-                    websocketService.sendAddFavoriteMessage(
-                    productDetails.accountMasterId,
-                    'Someone added your product to favorites!',
-                    )
-                  }}
-                />
+                <FavoriteIcon onClick={addToMyFavorites} />
               )}
-              <label>{favoriteState.totalFavorites}</label>
+            </div>
+            <div className='product-number-reaction-container'>
+              {heartReactState.isHearted ? (
+                <HighlightedHeartIcon onClick={removeToMyHeartedProduct} />
+              ) : (
+                <HeartIcon onClick={addToMyHearted} />
+              )}
+              <label>{heartReactState.totalHeartReact}</label>
             </div>
             <div className='product-number-reaction-container'>
               <CommentsIcon

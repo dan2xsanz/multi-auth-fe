@@ -32,3 +32,12 @@ export const openWarningNotification = (props: PopupInterface) => {
     placement: props.placement,
   })
 }
+
+export const openNotification = (props: PopupInterface) => {
+  notification.open({
+    message: props.subject,
+    description: props.description,
+    onClick: () => {}, // TODO REDIRECTS TO NOTICATION
+    placement: props.placement,
+  })
+}

@@ -1,2 +1,2 @@
 export * from './home-tab'
-export * from "./components"
+export * from "../../../common/product-details-modal"
