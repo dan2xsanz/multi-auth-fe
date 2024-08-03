@@ -1,9 +1,9 @@
 import { ResponseInterface } from '@/config/config'
+import { ProductListInterface } from '../data'
 import {
   ProductListFilterInterfaceValues,
   GetProductByFilterRequest,
   openErrorNotification,
-  ProductListInterface,
 } from '@/index'
 
 export const getAllProductsOperations = async (

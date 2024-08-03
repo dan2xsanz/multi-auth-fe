@@ -1,11 +1,11 @@
-import { UserOutlined } from '@ant-design/icons/lib/icons'
-import { Avatar, Card } from 'antd'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
-import './comment-section.css'
-import { SentCommentIcon } from '../icons'
-import { CommentSectionInterface } from './comment-section-interface'
-import { accountDetailStore, useStore } from '@/app/store'
 import { addCommentsOperation, getAllCommentsOperation } from './operation'
+import { CommentSectionInterface } from './comment-section-interface'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { accountDetailStore, useStore } from '@/app/store'
+import { UserOutlined } from '@ant-design/icons/lib/icons'
+import { SentCommentIcon } from '../icons'
+import { Avatar, Card } from 'antd'
+import './comment-section.css'
 
 interface CommentSectionProps {
   style: React.CSSProperties

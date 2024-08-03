@@ -1,12 +1,15 @@
 'use client'
-import websocketService from '../service/web-socket-service/websocket-service'
+import websocketService from '../service/web-socket-service/web-socket-service'
 import React, { Fragment, useEffect, useState } from 'react'
-import { ProfileTab } from './components/profile-tab'
-import { SnzLogo } from '../common/logo/snz-logo'
-import { HomeTab } from './components/home-tab'
 import { accountDetailStore } from '../store'
 import { useRouter } from 'next/navigation'
-import { FavoritesTab } from '@/index'
+import {
+  NotificationTab,
+  FavoritesTab,
+  ProfileTab,
+  HomeTab,
+  SnzLogo,
+} from '@/index'
 
 export default function HomePage() {
   // ACOUNT MASTER DETAILS
@@ -84,7 +87,7 @@ export default function HomePage() {
       <div className='body-container'>
         {headerButton === 1 && <HomeTab />}
         {headerButton === 2 && <FavoritesTab />}
-        {headerButton === 3 && <></>}
+        {headerButton === 3 && <NotificationTab />}
         {headerButton === 4 && <></>}
         {headerButton === 5 && <ProfileTab />}
       </div>

@@ -3,6 +3,7 @@ import { GetProductByFilterRequest, UpdateProductRequest } from '@/app/service'
 import React, { Fragment, useEffect, useState } from 'react'
 import { openErrorNotification } from '@/app/common/pop-up'
 import { accountDetailStore, useStore } from '@/app/store'
+import { ProductListInterface } from '../home-tab/data'
 import { ResponseInterface } from '@/config/config'
 import { AddIcon } from '@/app/common/icons'
 import { Image } from '@nextui-org/react'
@@ -14,6 +15,7 @@ import {
   UploadProduct,
 } from './components'
 import {
+  ProductDetailsModal,
   ButtonColorTypeEnum,
   ButtonTypeEnum,
   CommonButon,
@@ -26,6 +28,9 @@ export const ProfileTab = () => {
 
   // PRODUCT LIST
   const [productList, setProductList] = useState<UploadProductInterface[]>()
+
+  // SELECTED PRODUCT DETAILS
+  const [productDetails, setProductDetails] = useState<ProductListInterface>()
 
   // PRODUCT UPLOAD DETAILS
   const [productUploadDetails, setProductUploadDetails] =
@@ -135,11 +140,12 @@ export const ProfileTab = () => {
             </div>
           </div>
         )}
-        {productList?.length && !isLoading && (
+        {productList?.length && (
           <Fragment>
             {productList?.map((product, index) => (
               <UploadedProducts
                 key={index}
+                setProductDetails={setProductDetails}
                 productUploadDetailsResponse={product}
                 onClickEditProduct={(data: UploadProductInterface) => {
                   setProductUploadDetails(data)
@@ -163,6 +169,12 @@ export const ProfileTab = () => {
         setOpendAddNewProduct={setOpendAddNewProduct}
         setProductUploadDetails={setProductUploadDetails}
       />
+      {productDetails && (
+        <ProductDetailsModal
+          productDetails={productDetails}
+          setProductDetails={setProductDetails}
+        />
+      )}
     </div>
   )
 }

@@ -1,7 +1,6 @@
 'use client'
 import React, { Fragment, useEffect, useState } from 'react'
 import { getAllProductsOperations } from './operations'
-import { ProductDetailsModal } from './components'
 import { ProductListInterface } from './data'
 import { Image } from '@nextui-org/react'
 import { useStore } from '@/app/store'
@@ -16,6 +15,7 @@ import {
   productCategoryItems,
   discountCalculator,
   FilterIcon,
+  ProductDetailsModal,
 } from '@/index'
 
 export const HomeTab = () => {

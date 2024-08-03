@@ -1,3 +1,4 @@
+import { ProductListInterface } from '../../../home-tab/data'
 import { useEffect, useState } from 'react'
 import { Image as AntdImage } from 'antd'
 import './uploaded-products-style.css'
@@ -14,6 +15,7 @@ interface UploadedProductsProps {
   id?: number | undefined
   key?: number | undefined
   productUploadDetailsResponse: UploadProductInterface
+  setProductDetails: (data: ProductListInterface) => void
   onClickMarkAsSold: (data: UploadProductInterface) => void
   onClickEditProduct: (data: UploadProductInterface) => void
   onClickDeleteProduct: (data: UploadProductInterface) => void
@@ -22,6 +24,7 @@ interface UploadedProductsProps {
 export const UploadedProducts = (props: UploadedProductsProps) => {
   const {
     onClickMarkAsSold,
+    setProductDetails,
     onClickEditProduct,
     onClickDeleteProduct,
     productUploadDetailsResponse,
@@ -168,7 +171,15 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
           <AntdImage width={340} height={365} src={mainImageSrc} />
         </div>
       </div>
-      <div className='image-details'>
+      <div
+        className='image-details'
+        onClick={() => {
+          let productDetails: ProductListInterface = JSON.parse(
+            JSON.stringify(productUploadDetailsResponse),
+          )
+          setProductDetails(productDetails)
+        }}
+      >
         <div className='image-name-availability-container'>
           <div className='image-name-detail'>
             {getProductNameAndCondition(productUploadDetails)}

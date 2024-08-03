@@ -31,6 +31,18 @@
   }
 
 
+  .higlighted-love-style-container {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .higlighted-love-style-container:hover svg{
+    fill: rgba(255, 0, 0, 0.568);
+  }
+
+  
   .higlighted-favorites-style-container {
     width: 20px;
     height: 20px;
@@ -39,5 +51,6 @@
   }
   
   .higlighted-favorites-style-container:hover svg{
-    fill: rgba(255, 0, 0, 0.568);
+    fill: rgb(209, 145, 8);
+    color: rgb(209, 145, 8);
   }
