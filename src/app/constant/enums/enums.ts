@@ -8,9 +8,8 @@ export enum LinkSizeEnum {
   small = 'sm',
   large = 'lg',
   medium = 'md',
-  xsmall ='xsm'
+  xsmall = 'xsm',
 }
-
 
 export enum RadiusEnum {
   full = 'full',
@@ -26,21 +25,26 @@ export enum ButtonTypeEnum {
   reset = 'reset',
 }
 
-export enum ButtonColorTypeEnum{
+export enum ButtonColorTypeEnum {
   primary,
   secondary,
-  tertiary
+  tertiary,
 }
 
-export enum TypographySizeEnum{
-  smaller='-sm',
+export enum TypographySizeEnum {
+  smaller = '-sm',
   small = 'sm',
   xsmall = 'x-sm',
   xxsmall = 'xx-sm',
   medium = 'md',
   large = 'lg',
   larger = 'lgr',
-  xlarge= 'xlg',
-  xxlarge ='xxlg',
-  note ='note'
+  xlarge = 'xlg',
+  xxlarge = 'xxlg',
+  note = 'note',
+}
+
+export enum WebSocketTopic {
+  HeartReact = 'HeartReact',
+  Message = 'Message',
 }

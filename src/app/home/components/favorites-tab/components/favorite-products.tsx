@@ -1,4 +1,7 @@
 'use client'
+import { ProductListInterface } from '../../home-tab/data'
+import { useEffect, useState } from 'react'
+import { Image as AntdImage } from 'antd'
 import {
   UploadProductInterface,
   productConditionItems,
@@ -7,15 +10,14 @@ import {
   discountCalculator,
   itemForType,
 } from '@/index'
-import { useEffect, useState } from 'react'
-import { Image as AntdImage } from 'antd'
 
 interface FavoritesProductsInterface {
+  setProductDetails: (data: ProductListInterface) => void
   productUploadDetailsResponse: UploadProductInterface
 }
 
 export const FavoritesProducts = (props: FavoritesProductsInterface) => {
-  const { productUploadDetailsResponse } = props
+  const { productUploadDetailsResponse, setProductDetails } = props
   // PRODUCT UPLOAD DETAILS
   const [productUploadDetails, setProductUploadDetails] =
     useState<UploadProductInterface>(productUploadDetailsResponse)
@@ -133,7 +135,15 @@ export const FavoritesProducts = (props: FavoritesProductsInterface) => {
           <AntdImage width={340} height={365} src={mainImageSrc} />
         </div>
       </div>
-      <div className='image-details'>
+      <div
+        className='image-details'
+        onClick={() => {
+          let productDetails: ProductListInterface = JSON.parse(
+            JSON.stringify(productUploadDetailsResponse),
+          )
+          setProductDetails(productDetails)
+        }}
+      >
         <div className='image-name-availability-container'>
           <div className='image-name-detail'>
             {getProductNameAndCondition(productUploadDetails)}
