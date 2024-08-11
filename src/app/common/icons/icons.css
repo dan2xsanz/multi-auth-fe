@@ -54,3 +54,26 @@
     fill: rgb(209, 145, 8);
     color: rgb(209, 145, 8);
   }
+
+
+  .higlighted-love-react-container{
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+    fill: rgba(255, 0, 0, 0.911);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+
+  .comment-container{
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    fill: rgba(0, 0, 0, 0.527);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }

@@ -1,10 +1,10 @@
+import { ProductListInterface } from '../home/components/home-tab/data'
 import {
-  itemForType,
-  productCategoryItems,
   productConditionItems,
+  productCategoryItems,
   productCurrencyType,
+  itemForType,
 } from '../constant'
-import { ProductListInterface } from '../home'
 
 export const checkRequiredFields = (
   previousValues: any,
@@ -53,41 +53,41 @@ export const discountCalculator = (
 
 // FIND PRODUCT NAME AND CONDITION
 export const getProductNameAndCondition = (
-  productDetails: ProductListInterface,
+  productDetails: ProductListInterface | undefined,
 ): string => {
   return `${productConditionItems
     .map((data) => {
-      if (data.key === productDetails.productCondition?.toString())
+      if (data.key === productDetails?.productCondition?.toString())
         return data.label
     })
     .filter((label) => label)
-    .join('|')} | ${productDetails.productName}`
+    .join('|')} | ${productDetails?.productName}`
 }
 
 // FIND PRODUCT CATEGORY CONDITION
-export const getProductCategory = (productDetails: ProductListInterface): string => {
-  const categoryKey = productDetails.productCategory?.toString()
+export const getProductCategory = (productDetails: ProductListInterface | undefined): string => {
+  const categoryKey = productDetails?.productCategory?.toString()
   const category = productCategoryItems.find((data) => data.key === categoryKey)
 
   return category ? category.label : ''
 }
 
 // FIND PRODUCT CATEGORY CONDITION
-export const getProductItemFor = (productDetails: ProductListInterface): string => {
-  const itemForKey = productDetails.itemFor?.toString()
+export const getProductItemFor = (productDetails: ProductListInterface | undefined): string => {
+  const itemForKey = productDetails?.itemFor?.toString()
   const itemFor = itemForType.find((data) => data.key === itemForKey)
   return itemFor ? itemFor.label : ''
 }
 
 // GET PRODUCT PRICE AND CURRENCY
-export const getProductPriceAndCurrency = (productDetails: ProductListInterface) => {
+export const getProductPriceAndCurrency = (productDetails: ProductListInterface | undefined) => {
   const currency =
     productCurrencyType.find(
       (data) =>
-        data.value.toString() === productDetails.productCurrency?.toString(),
+        data.value.toString() === productDetails?.productCurrency?.toString(),
     )?.display || ''
-  const price = productDetails.productPrice
-    ? Number(productDetails.productPrice).toLocaleString()
+  const price = productDetails?.productPrice
+    ? Number(productDetails?.productPrice).toLocaleString()
     : ''
   return `${currency} ${price}`
 }

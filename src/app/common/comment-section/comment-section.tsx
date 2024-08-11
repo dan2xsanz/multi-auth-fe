@@ -1,3 +1,6 @@
+import { NotificationInterface } from '@/app/service/web-socket-service/web-socket-service-interface'
+import webSocketServiceInstance from '@/app/service/web-socket-service/web-socket-service'
+import { ProductListInterface } from '@/app/home/components/home-tab/data'
 import { addCommentsOperation, getAllCommentsOperation } from './operation'
 import { CommentSectionInterface } from './comment-section-interface'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
@@ -6,15 +9,25 @@ import { UserOutlined } from '@ant-design/icons/lib/icons'
 import { SentCommentIcon } from '../icons'
 import { Avatar, Card } from 'antd'
 import './comment-section.css'
+import { WebSocketTopic } from '@/index'
 
 interface CommentSectionProps {
+  inputedValue: string
   style: React.CSSProperties
+  setInputtedValue: (data: string) => void
+  productDetails: ProductListInterface | undefined
   productMasterId: number | undefined
 }
 
 export const CommentSection = (props: CommentSectionProps) => {
   // COMMENT SECTION PROPS
-  const { style, productMasterId } = props
+  const {
+    style,
+    inputedValue,
+    productDetails,
+    productMasterId,
+    setInputtedValue,
+  } = props
 
   // LOADING SCREEN STORE
   const { setIsLoading } = useStore()
@@ -30,9 +43,6 @@ export const CommentSection = (props: CommentSectionProps) => {
     CommentSectionInterface[]
   >([])
 
-  // INPITTED VALUE STATE
-  const [inputedValue, setInputtedValue] = useState<string>('')
-
   // ON ADD TO COMMENT SECTION LIST
   const addToCommentSection = (inputedValue: string) => {
     let commentSectionData: CommentSectionInterface = {
@@ -40,6 +50,7 @@ export const CommentSection = (props: CommentSectionProps) => {
       accountMasterName: `${firstName} ${lastName}`,
       comment: inputedValue,
       productMasterId: productMasterId,
+      notifiedAccountMasterId: productDetails?.accountMasterId,
     }
     addCommentsOperation(
       setIsLoading,
@@ -49,6 +60,14 @@ export const CommentSection = (props: CommentSectionProps) => {
       commentSectionList,
       setCommentSectionList,
     )
+    let notification: NotificationInterface = {
+      senderId: accountId,
+      subject: productDetails?.productName,
+      notificationTopic: WebSocketTopic.Comment,
+      receiverId: productDetails?.accountMasterId,
+      message: `${firstName} ${lastName} Commented on your Product`,
+    }
+    webSocketServiceInstance.sendNotificationMessage(notification)
   }
 
   // AUTO FOCUS FIELD

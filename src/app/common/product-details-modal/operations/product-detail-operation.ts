@@ -8,6 +8,7 @@ import {
   AddToHeartReacted,
   ListOfHeartReacts,
   TotalComments,
+  GetProductRequest,
 } from '@/index'
 import {
   DeleteMyFavorites,
@@ -18,13 +19,13 @@ import {
 export const addToMyFavoritesOperation = async (
   accountId: number | undefined,
   setIsLoading: (data: boolean) => void,
-  productDetails: ProductListInterface,
+  productDetails: ProductListInterface | undefined,
 ) => {
   setIsLoading(true)
   try {
     const response: ResponseInterface = await AddToMyFavorites({
       isFavorite: true,
-      productMasterId: productDetails.id,
+      productMasterId: productDetails?.id,
       accountMasterId: accountId,
     })
     // RETURN SUCCESS MESSAGE
@@ -48,13 +49,13 @@ export const addToMyFavoritesOperation = async (
 export const deleteMyFavoritesOperation = async (
   accountId: number | undefined,
   setIsLoading: (data: boolean) => void,
-  productDetails: ProductListInterface,
+  productDetails: ProductListInterface | undefined,
 ) => {
   setIsLoading(true)
   try {
     const response: ResponseInterface = await DeleteMyFavorites({
       isFavorite: false,
-      productMasterId: productDetails.id,
+      productMasterId: productDetails?.id,
       accountMasterId: accountId,
     })
   } catch (error: any) {
@@ -107,14 +108,15 @@ export const listOfFavoritesOperation = async (
 export const addToMyHeartedProductOperation = async (
   accountId: number | undefined,
   setIsLoading: (data: boolean) => void,
-  productDetails: ProductListInterface,
+  productDetails: ProductListInterface | undefined,
 ) => {
   setIsLoading(true)
   try {
     const response: ResponseInterface = await AddToHeartReacted({
       isHearted: true,
-      productMasterId: productDetails.id,
+      productMasterId: productDetails?.id,
       accountMasterId: accountId,
+      notifiedAccountMasterId: productDetails?.accountMasterId,
     })
   } catch (error: any) {
     // RETURN ERROR MESSAGE
@@ -130,14 +132,15 @@ export const addToMyHeartedProductOperation = async (
 export const deleteHeartedProductOperation = async (
   accountId: number | undefined,
   setIsLoading: (data: boolean) => void,
-  productDetails: ProductListInterface,
+  productDetails: ProductListInterface | undefined,
 ) => {
   setIsLoading(true)
   try {
     const response: ResponseInterface = await DeleteFromMyHeartReacted({
       isHearted: false,
-      productMasterId: productDetails.id,
+      productMasterId: productDetails?.id,
       accountMasterId: accountId,
+      notifiedAccountMasterId: productDetails?.accountMasterId,
     })
   } catch (error: any) {
     // RETURN ERROR MESSAGE
@@ -199,6 +202,29 @@ export const getAllCommentsOperation = async (
     // RETURN SUCCESS MESSAGE
     if (response.isSuccess && response.resultData) {
       setTotalComments(response.resultData)
+    }
+  } catch (error: any) {
+    // RETURN ERROR MESSAGE
+    openErrorNotification({
+      description: error.response?.data?.message || 'An error occurred',
+      placement: 'bottomRight',
+    })
+  } finally {
+    setIsLoading(false)
+  }
+}
+
+export const getProductMasterId = async (
+  setIsLoading: (data: boolean) => void,
+  productMasterId: number | undefined,
+  setProductDetails: (data: ProductListInterface | undefined) => void,
+) => {
+  setIsLoading(true)
+  try {
+    const response: ResponseInterface = await GetProductRequest(productMasterId)
+    // RETURN SUCCESS MESSAGE
+    if (response.isSuccess && response.resultData) {
+      setProductDetails(response.resultData)
     }
   } catch (error: any) {
     // RETURN ERROR MESSAGE

@@ -17,7 +17,9 @@ interface FavoritesProductsInterface {
 }
 
 export const FavoritesProducts = (props: FavoritesProductsInterface) => {
+  // FAVORITE PRODUCT PROPS
   const { productUploadDetailsResponse, setProductDetails } = props
+
   // PRODUCT UPLOAD DETAILS
   const [productUploadDetails, setProductUploadDetails] =
     useState<UploadProductInterface>(productUploadDetailsResponse)

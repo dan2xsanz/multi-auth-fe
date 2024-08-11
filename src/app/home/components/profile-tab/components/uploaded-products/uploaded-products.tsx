@@ -14,6 +14,7 @@ import {
 interface UploadedProductsProps {
   id?: number | undefined
   key?: number | undefined
+  setOpenDetailModal: (data: boolean) => void
   productUploadDetailsResponse: UploadProductInterface
   setProductDetails: (data: ProductListInterface) => void
   onClickMarkAsSold: (data: UploadProductInterface) => void
@@ -25,6 +26,7 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
   const {
     onClickMarkAsSold,
     setProductDetails,
+    setOpenDetailModal,
     onClickEditProduct,
     onClickDeleteProduct,
     productUploadDetailsResponse,
@@ -33,6 +35,11 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
   // PRODUCT UPLOAD DETAILS
   const [productUploadDetails, setProductUploadDetails] =
     useState<UploadProductInterface>(productUploadDetailsResponse)
+
+  // IS ON STPCK HANDLER
+  const [onStockProduct, setOnStockProduct] = useState<boolean | undefined>(
+    productUploadDetails?.isSold,
+  )
 
   // MAIN IMAGE
   const [mainImageSrc, setMainImageSrc] = useState<string | undefined>(
@@ -46,6 +53,7 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
       isSold: !productUploadDetails.isSold,
     }
     onClickMarkAsSold(maskAsSoldProductDetails)
+    setOnStockProduct(!onStockProduct)
   }
 
   // ON CLICK DELETE BUTTON
@@ -131,113 +139,112 @@ export const UploadedProducts = (props: UploadedProductsProps) => {
   }, [productUploadDetails.image1])
 
   return (
-    <div className='uploaded-products-main-container'>
-      <div className='images-container'>
-        <div className='additional-image-container'>
-          <AntdImage
-            width={80}
-            height={80}
-            preview={false}
-            className='image-container'
-            src={productUploadDetails.image1}
-            onMouseEnter={() => setMainImageSrc(productUploadDetails.image1)}
-          />
-          <AntdImage
-            width={80}
-            height={80}
-            preview={false}
-            className='image-container'
-            src={productUploadDetails.image2}
-            onMouseEnter={() => setMainImageSrc(productUploadDetails.image2)}
-          />
-          <AntdImage
-            width={80}
-            height={80}
-            preview={false}
-            className='image-container'
-            src={productUploadDetails.image3}
-            onMouseEnter={() => setMainImageSrc(productUploadDetails.image3)}
-          />
-          <AntdImage
-            width={80}
-            height={80}
-            preview={false}
-            className='image-container'
-            src={productUploadDetails.image4}
-            onMouseEnter={() => setMainImageSrc(productUploadDetails.image4)}
-          />
+    <div style={{ display: 'grid' }}>
+      <div className='uploaded-products-main-container'>
+        <div className='images-container'>
+          <div className='additional-image-container'>
+            <AntdImage
+              width={80}
+              height={80}
+              preview={false}
+              className='image-container'
+              src={productUploadDetails.image1}
+              onMouseEnter={() => setMainImageSrc(productUploadDetails.image1)}
+            />
+            <AntdImage
+              width={80}
+              height={80}
+              preview={false}
+              className='image-container'
+              src={productUploadDetails.image2}
+              onMouseEnter={() => setMainImageSrc(productUploadDetails.image2)}
+            />
+            <AntdImage
+              width={80}
+              height={80}
+              preview={false}
+              className='image-container'
+              src={productUploadDetails.image3}
+              onMouseEnter={() => setMainImageSrc(productUploadDetails.image3)}
+            />
+            <AntdImage
+              width={80}
+              height={80}
+              preview={false}
+              className='image-container'
+              src={productUploadDetails.image4}
+              onMouseEnter={() => setMainImageSrc(productUploadDetails.image4)}
+            />
+          </div>
+          <div className='displayed-image-container'>
+            <AntdImage width={340} height={365} src={mainImageSrc} />
+          </div>
         </div>
-        <div className='displayed-image-container'>
-          <AntdImage width={340} height={365} src={mainImageSrc} />
+        <div
+          className='image-details'
+          onClick={() => {
+            let productDetails: ProductListInterface = JSON.parse(
+              JSON.stringify(productUploadDetailsResponse),
+            )
+            setOpenDetailModal(true)
+            setProductDetails(productDetails)
+          }}
+        >
+          <div className='image-name-availability-container'>
+            <div className='image-name-detail'>
+              {getProductNameAndCondition(productUploadDetails)}
+            </div>
+            {onStockProduct ? (
+              <div className='profile-image-out-stock-container'>
+                OUT OF STOCK
+              </div>
+            ) : (
+              <div className='profile-image-on-stock-container'>ON STOCK</div>
+            )}
+          </div>
+          <div className='image-category'>
+            {`${getProductItemFor(productUploadDetails)} ${getProductCategory(productUploadDetails)}`}
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {productUploadDetails.productDiscount && (
+              <div className='image-price'>
+                {discountCalculator(
+                  productUploadDetails.productPrice,
+                  productUploadDetails.productDiscount,
+                  productUploadDetails.productCurrency,
+                )}
+              </div>
+            )}
+            <div
+              className={
+                productUploadDetails.productDiscount
+                  ? 'image-price-discounted'
+                  : 'image-price'
+              }
+            >
+              {getProductCurrencyAndPrice(productUploadDetails)}
+            </div>
+            {productUploadDetails.productDiscount && (
+              <div className='image-price-discount'>{` ${productUploadDetails.productDiscount}% off`}</div>
+            )}
+          </div>
+          <div className='image-description'>
+            {productUploadDetails.productDescription}
+          </div>
         </div>
       </div>
-      <div
-        className='image-details'
-        onClick={() => {
-          let productDetails: ProductListInterface = JSON.parse(
-            JSON.stringify(productUploadDetailsResponse),
-          )
-          setProductDetails(productDetails)
-        }}
-      >
-        <div className='image-name-availability-container'>
-          <div className='image-name-detail'>
-            {getProductNameAndCondition(productUploadDetails)}
-          </div>
-          {productUploadDetails.isSold ? (
-            <div className='profile-image-out-stock-container'>
-              OUT OF STOCK
-            </div>
-          ) : (
-            <div className='profile-image-on-stock-container'>ON STOCK</div>
-          )}
+      <div className='action-buttons-container'>
+        <div className='action-button-style' onClick={onClickMarkAsSoldHandler}>
+          {`${productUploadDetails.isSold ? 'Mark as On Stock' : 'Mark as Out of Stock'} `}
         </div>
-        <div className='image-category'>
-          {`${getProductItemFor(productUploadDetails)} ${getProductCategory(productUploadDetails)}`}
+        <div className='action-button-style' onClick={onClickEditHandler}>
+          Edit
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          {productUploadDetails.productDiscount && (
-            <div className='image-price'>
-              {discountCalculator(
-                productUploadDetails.productPrice,
-                productUploadDetails.productDiscount,
-                productUploadDetails.productCurrency,
-              )}
-            </div>
-          )}
-          <div
-            className={
-              productUploadDetails.productDiscount
-                ? 'image-price-discounted'
-                : 'image-price'
-            }
-          >
-            {getProductCurrencyAndPrice(productUploadDetails)}
-          </div>
-          {productUploadDetails.productDiscount && (
-            <div className='image-price-discount'>{` ${productUploadDetails.productDiscount}% off`}</div>
-          )}
-        </div>
-        <div className='image-description'>
-          {productUploadDetails.productDescription}
-        </div>
-
-        <div className='action-buttons-container'>
-          <div
-            className='action-button-style'
-            onClick={onClickMarkAsSoldHandler}
-          >
-            {`${productUploadDetails.isSold ? 'Mark as On Stock' : 'Mark as Out of Stock'} `}
-          </div>
-          <div className='action-button-style' onClick={onClickEditHandler}>
-            Edit
-          </div>
-          <div
-            className='action-button-style'
-            onClick={onClickMarkAsDeletedHandler}
-          >
-            Delete
-          </div>
+        <div
+          className='action-button-style'
+          onClick={onClickMarkAsDeletedHandler}
+        >
+          Delete
         </div>
       </div>
     </div>

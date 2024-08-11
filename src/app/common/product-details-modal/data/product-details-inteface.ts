@@ -26,12 +26,14 @@ export interface HeartReactInterface {
   isHearted: boolean
   productMasterId: number | undefined
   accountMasterId: number | undefined
+  notifiedAccountMasterId: number | undefined
 }
 
 export const HeartReactDefaultValue: HeartReactInterface = {
   isHearted: false,
   productMasterId: undefined,
   accountMasterId: undefined,
+  notifiedAccountMasterId: undefined,
 }
 
 export interface HeartReactStateInterface {
