@@ -1,0 +1,53 @@
+.notification-container {
+  background-color: rgba(175, 175, 175, 0.438);
+  width: 100%;
+  display: flex;
+  position: relative;
+  height: 4rem;
+  gap: 5px;
+  padding: 7px;
+  margin: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+
+.notification-container:hover {
+  transform: scale(1.1);
+}
+
+.notification-container-read {
+  background-color:rgba(223, 221, 221, 0.288);
+  width: 100%;
+  display: flex;
+  position: relative;
+  height: 4rem;
+  gap: 5px;
+  padding: 7px;
+  margin: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+
+.notification-container-read:hover {
+  transform: scale(1.1);
+}
+
+.notification-details {
+  display: grid;
+  color: black;
+  margin: 10px;
+}
+
+.notification-subject-container {
+  margin-top: -10px;
+  display: grid;
+  font-size: 11px;
+}
+
+.notification-name {
+  font-size: 13px;
+  font-weight: bold;
+  margin-right: 1.5px;
+}

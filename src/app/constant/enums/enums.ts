@@ -45,6 +45,7 @@ export enum TypographySizeEnum {
 }
 
 export enum WebSocketTopic {
-  HeartReact = 'HeartReact',
+  HeartReact = 'REACTION',
+  Comment = 'COMMENT',
   Message = 'Message',
 }

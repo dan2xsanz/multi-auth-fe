@@ -1,6 +1,6 @@
 'use client'
 import { NotificationInterface } from '@/app/service/web-socket-service/web-socket-service-interface'
-import websocketService from '@/app/service/web-socket-service/web-socket-service'
+import webSocketServiceInstance from '@/app/service/web-socket-service/web-socket-service'
 import { ProductListInterface } from '../../home/components/home-tab/data'
 import React, { Fragment, useEffect, useState } from 'react'
 import { accountDetailStore, useStore } from '@/app/store'
@@ -24,28 +24,39 @@ import {
   HeartIcon,
 } from '@/index'
 import {
-  FavoritesStateDefaultValue,
-  FavoritesStateInterface,
   HeartReactStateDefaultValue,
+  FavoritesStateDefaultValue,
   HeartReactStateInterface,
+  FavoritesStateInterface,
 } from './data'
 import {
-  addToMyFavoritesOperation,
   addToMyHeartedProductOperation,
+  listOfHeartedProductOperation,
   deleteHeartedProductOperation,
   deleteMyFavoritesOperation,
-  getAllCommentsOperation,
+  addToMyFavoritesOperation,
   listOfFavoritesOperation,
-  listOfHeartedProductOperation,
+  getAllCommentsOperation,
+  getProductMasterId,
 } from './operations'
 
 interface ProductDetailsModalProps {
-  setProductDetails: (data: ProductListInterface | undefined) => void
-  productDetails: ProductListInterface
+  productMasterId: number | undefined
+  openDetailModal: boolean
+  setOpenDetailModal: (data: boolean) => void
 }
 
 export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
-  const { productDetails, setProductDetails } = props
+  // PRODUCT DETAILS PROPS
+  const { productMasterId, openDetailModal, setOpenDetailModal } = props
+
+  // PRODUCT DETAILS STATE
+  const [productDetails, setProductDetails] = useState<
+    ProductListInterface | undefined
+  >()
+
+  // INPITTED VALUE STATE
+  const [inputedValue, setInputtedValue] = useState<string>('')
 
   // UPLOADED PRODUCT IMAGES
   const [productImages, setProductImages] = useState<any[]>([null])
@@ -93,12 +104,12 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
   const addToMyHearted = () => {
     let notification: NotificationInterface = {
       senderId: accountId,
-      subject: productDetails.productName,
+      subject: productDetails?.productName,
       notificationTopic: WebSocketTopic.HeartReact,
-      receiverId: productDetails.accountMasterId,
+      receiverId: productDetails?.accountMasterId,
       message: `${firstName} ${lastName} Loves your Product`,
     }
-    websocketService.sendNotificationMessage(notification)
+    webSocketServiceInstance.sendNotificationMessage(notification)
     setHeartReactState({
       ...heartReactState,
       isHearted: !heartReactState.isHearted,
@@ -128,41 +139,47 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
 
   // COUNT THE NUMBER OF REACTS, COMMENTS
   useEffect(() => {
-    if (productDetails.id) {
+    if (productDetails?.id) {
       listOfFavoritesOperation(
         accountId,
         setIsLoading,
         setFavoriteState,
-        productDetails.id,
+        productDetails?.id,
       )
       listOfHeartedProductOperation(
         accountId,
         setIsLoading,
         setHeartReactState,
-        productDetails.id,
+        productDetails?.id,
       )
       getAllCommentsOperation(
         setIsLoading,
-        productDetails.id,
+        productDetails?.id,
         setTotalCommentState,
       )
     }
   }, [
     accountId,
+    inputedValue,
     setIsLoading,
-    productDetails.id,
+    openDetailModal,
+    productDetails?.id,
     favoriteState.isFavorite,
     heartReactState.isHearted,
   ])
+
+  useEffect(() => {
+    getProductMasterId(setIsLoading, productMasterId, setProductDetails)
+  }, [productMasterId])
 
   return (
     <CommonModal
       height='480px'
       width='1000px'
       isShowFooterButtons={false}
-      isOpen={productDetails !== undefined}
-      onCancel={() => setProductDetails(undefined)}
-      title={`${productDetails.productName} Details`}
+      isOpen={openDetailModal}
+      onCancel={() => setOpenDetailModal(!openDetailModal)}
+      title={`${productDetails?.productName} Details`}
     >
       <div className='modal-body-container'>
         <div className='modal-image-container'>
@@ -201,7 +218,7 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
                 <div
                   style={{ display: 'flex', gap: '10px', marginTop: '10px' }}
                 >
-                  {productDetails.productDiscount && (
+                  {productDetails?.productDiscount && (
                     <div className='image-price'>
                       {discountCalculator(
                         productDetails.productPrice,
@@ -212,25 +229,27 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
                   )}
                   <div
                     className={
-                      productDetails.productDiscount
+                      productDetails?.productDiscount
                         ? 'image-price-discounted'
                         : 'image-price'
                     }
                   >
                     {getProductPriceAndCurrency(productDetails)}
                   </div>
-                  {productDetails.productDiscount && (
+                  {productDetails?.productDiscount && (
                     <div className='image-price-discount'>{` ${productDetails.productDiscount}% off`}</div>
                   )}
                 </div>
                 <div className='product-details-image-description'>
-                  {productDetails.productDescription}
+                  {productDetails?.productDescription}
                 </div>
               </Fragment>
             )}
             {commentSection && (
               <CommentSection
-                productMasterId={productDetails.id}
+                inputedValue={inputedValue}
+                setInputtedValue={setInputtedValue}
+                productMasterId={productDetails?.id}
                 style={{
                   width: '480px',
                   height: '100%',
@@ -241,6 +260,7 @@ export const ProductDetailsModal = (props: ProductDetailsModalProps) => {
                   overflowY: 'auto',
                   overflowX: 'hidden',
                 }}
+                productDetails={productDetails}
               />
             )}
           </div>

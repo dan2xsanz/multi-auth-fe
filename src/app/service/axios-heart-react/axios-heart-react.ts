@@ -58,7 +58,7 @@ export const ListOfHeartReacts = (
     })
   }
   
-  export const ListOfFavoritesByAccount = (
+  export const ListOfHeartsByAccount = (
     accountMasterId: number | undefined,
   ): Promise<ResponseInterface> => {
     return new Promise((resolve, reject) => {
