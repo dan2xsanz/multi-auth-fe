@@ -1,9 +1,12 @@
 export interface NoticationInterface {
   id?: number | undefined
   isRead?: boolean
-  notificationtTopic?: string
+  notificationTopic?: string
   productMasterId?: number | undefined
   accountMasterId?: number | undefined
   notificationSubject?: string
   notificationDetails?: string
+  notificationImage?: string
+  notifiedAccountMasterId?: number | undefined
+  notificationProduct?: string
 }

@@ -32,6 +32,9 @@ export const ProfileTab = () => {
   // SELECTED PRODUCT DETAILS
   const [productDetails, setProductDetails] = useState<ProductListInterface>()
 
+  // OPEN PRODUCT DETAIL MODAL
+  const [openDetailModal, setOpenDetailModal] = useState<boolean>(false)
+
   // PRODUCT UPLOAD DETAILS
   const [productUploadDetails, setProductUploadDetails] =
     useState<UploadProductInterface>(UploadProductValues)
@@ -145,6 +148,7 @@ export const ProfileTab = () => {
             {productList?.map((product, index) => (
               <UploadedProducts
                 key={index}
+                setOpenDetailModal={setOpenDetailModal}
                 setProductDetails={setProductDetails}
                 productUploadDetailsResponse={product}
                 onClickEditProduct={(data: UploadProductInterface) => {
@@ -171,8 +175,9 @@ export const ProfileTab = () => {
       />
       {productDetails && (
         <ProductDetailsModal
-          productDetails={productDetails}
-          setProductDetails={setProductDetails}
+          openDetailModal={openDetailModal}
+          productMasterId={productDetails.id}
+          setOpenDetailModal={setOpenDetailModal}
         />
       )}
     </div>

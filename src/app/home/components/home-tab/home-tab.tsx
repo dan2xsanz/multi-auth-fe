@@ -26,11 +26,14 @@ export const HomeTab = () => {
   const [selectedFilter, setSelectedFilter] =
     useState<ProductListFilterInterfaceValues>(ProductListInterfaceValues)
 
-  // DISPLAY FILTER
-  const [displayFilter, setDisplayFilter] = useState<boolean>(true)
-
   // SELECTED PRODUCT DETAILS
   const [productDetails, setProductDetails] = useState<ProductListInterface>()
+
+  // OPEN PRODUCT DETAIL MODAL
+  const [openDetailModal, setOpenDetailModal] = useState<boolean>(false)
+
+  // DISPLAY FILTER
+  const [displayFilter, setDisplayFilter] = useState<boolean>(true)
 
   // LOADING SCREEN STORE
   const { setIsLoading } = useStore()
@@ -197,7 +200,10 @@ export const HomeTab = () => {
                   </div>
                   <div
                     className='image-container'
-                    onClick={() => setProductDetails(product)}
+                    onClick={() => {
+                      setProductDetails(product)
+                      setOpenDetailModal(true)
+                    }}
                   >
                     <Image
                       radius='none'
@@ -260,8 +266,9 @@ export const HomeTab = () => {
       </Fragment>
       {productDetails && (
         <ProductDetailsModal
-          productDetails={productDetails}
-          setProductDetails={setProductDetails}
+          openDetailModal={openDetailModal}
+          productMasterId={productDetails.id}
+          setOpenDetailModal={setOpenDetailModal}
         />
       )}
     </Fragment>

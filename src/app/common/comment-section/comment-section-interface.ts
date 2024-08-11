@@ -8,4 +8,5 @@ export interface CommentSectionInterface {
   accountMasterName?: string | undefined
   comment?: string | undefined
   productMasterId?: number | undefined
+  notifiedAccountMasterId: number | undefined
 }
