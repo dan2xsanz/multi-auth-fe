@@ -4,7 +4,6 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { listOfNotificationOperation } from './operations'
 import { NoticationInterface } from './data'
 import { Notications } from './components'
-import { ProductListInterface } from '../home-tab/data'
 import { ProductDetailsModal } from '@/index'
 
 export const NotificationTab = () => {

@@ -27,7 +27,7 @@ import {
 
 export default function LoginPage() {
   // LOADING SCREEN STORE
-  const { setAccountId, setFirstName, setLastName, setEmail } =
+  const { setAccountId, setFirstName, setLastName, setEmail, setCoverImg } =
     accountDetailStore()
 
   const { setIsLoading } = useStore()
@@ -85,6 +85,7 @@ export default function LoginPage() {
     setEmail(response.resultData.email)
     setLastName(response.resultData.lastName)
     setFirstName(response.resultData.firstName)
+    setCoverImg(`url(data:image/png;base64,${response.resultData.coverImg})`)
   }
 
   // LOG IN REQUEST

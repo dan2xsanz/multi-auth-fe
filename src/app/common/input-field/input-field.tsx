@@ -40,7 +40,7 @@ export const CommonInputField = (props: InputFieldInterface) => {
         style={style}
         value={value && value}
         maxLength={maxLength && maxLength}
-        label={`${required ? '* ' : ''}${label} `}
+        label={label && `${required ? '* ' : ''}${label} `}
         onChange={(data) => onChange && onChange(data)}
         onKeyDown={(data) => onKeyDown && onKeyDown(data)}
         className={isError && !value ? 'input-field-error' : 'input-field'}

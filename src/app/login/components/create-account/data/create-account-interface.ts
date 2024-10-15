@@ -1,4 +1,5 @@
 export interface CreateAccountInterface {
+  id?: number
   fName?: string
   lName?: string
   email?: string
@@ -6,6 +7,8 @@ export interface CreateAccountInterface {
   verifyPassword?: string
   otp?: string
   isForgotPass?: boolean
+  profileImg?: any
+  coverImg?: any
 }
 
 export const createAccountDefaultValues: CreateAccountInterface = {

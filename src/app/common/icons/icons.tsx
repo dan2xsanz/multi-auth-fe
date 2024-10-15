@@ -133,9 +133,9 @@ export const MessageIcon = (props: IconInterface) => {
 }
 
 export const AddIcon = (props: IconInterface) => {
-  const { onClick } = props
+  const { onClick, style } = props
   return (
-    <div className='add-icon-style-container' onClick={onClick}>
+    <div className='add-icon-style-container' style={style} onClick={onClick}>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 600 600'
