@@ -9,12 +9,9 @@ import {
   ProfileTab,
   HomeTab,
   SnzLogo,
-  CommonTypography,
-  TypographySizeEnum,
   CommonDrawer,
 } from '@/index'
-import { Drawer } from 'antd'
-import Typography from 'antd/es/typography/Typography'
+import { MessagesTab } from './components/messages-tab/messages-tab'
 
 export default function HomePage() {
   // ACOUNT MASTER DETAILS
@@ -25,6 +22,9 @@ export default function HomePage() {
 
   // OPEN NOTIFIICATION DRAWER
   const [openNotification, setOpenNotification] = useState<boolean>(false)
+
+  // OPEN NOTIFIICATION DRAWER
+  const [openMessages, setOpenMessages] = useState<boolean>(false)
 
   // ROUTER
   const router = useRouter()
@@ -56,7 +56,7 @@ export default function HomePage() {
             >
               Notification
             </div>
-            <div className='header-icon' onClick={() => {}}>
+            <div className='header-icon' onClick={() => setOpenMessages(true)}>
               Messages
             </div>
             <div
@@ -78,6 +78,11 @@ export default function HomePage() {
         openDrawer={openNotification}
         setOpenDrawer={setOpenNotification}
         children={<NotificationTab />}
+      />
+      <CommonDrawer
+        openDrawer={openMessages}
+        setOpenDrawer={setOpenMessages}
+        children={<MessagesTab />}
       />
     </Fragment>
   )

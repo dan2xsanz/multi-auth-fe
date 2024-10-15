@@ -1,89 +1,94 @@
-.main-profile-container{
-    width: 100%;
-    padding-left:10%;
-    padding-right:10%;
-    padding-top: 5px;
-    overflow-x: hidden;
+.main-profile-container {
+  width: 100%;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 5px;
+  overflow-x: hidden;
 }
 
-.main-profile-container-image-name{
+.main-profile-container-cover-image-name {
+    height: 200px;
     display: flex;
-    align-items: center;
-    gap: 15px;
-    padding-bottom: 15px;
-    border-bottom-width: 1px;
+    justify-content: flex-end;
+    background-color: rgb(125, 131, 125);
     border-bottom-color: rgba(0, 0, 0, 0.085);
+    position: relative; /* Add this to enable positioning of children */
+     background-size: cover; /* Ensures the image covers the entire div */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents repeating the image */
+  
 }
 
-.main-profile-image-container{
-    height: 170px;
-    width: 170px;
+.main-profile-image-details-container {
+  display: flex;
+  align-items: center;
+  margin-top: -50px;
+  gap: 10px;
 }
 
-.main-profile-name-membership{
-    display: grid;
+.main-profile-image-container {
+  height: 170px;
+  width: 170px;
 }
 
-.selling-title-container{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: black;
-    padding: 10px;
-    /* background-color: rgba(0, 0, 0, 0.036); */
+.main-profile-name-membership {
+  display: grid;
 }
 
-
-.main-profile-name-container{
-    font-size: 30px;
-    color: black;
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
-    font-weight:bold;
+.selling-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: black;
+  padding: 10px;
 }
 
-.main-profile-membership{
- font-family:Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 15px;  
+.main-profile-name-container {
+  font-size: 30px;
+  color: black;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+}
+
+.main-profile-membership {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 15px;
   margin-top: -5px;
-  margin-left: .9px;
-   color: grey;
+  margin-left: 0.9px;
+  color: grey;
 }
 
-
-.listing-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 10px;
+.listing-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
-.add-new-listing-container{
-    display: flex;
-    width: 40%;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 5%;
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 12px;
-    color: black;
-    cursor: pointer;
-    background-color: rgba(0, 0, 0, 0.1);
-    padding: 50px;
+.add-new-listing-container {
+  display: flex;
+  width: 40%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 5%;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 12px;
+  color: black;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 50px;
 }
 
-.add-new-listing-container:hover{
-    background-color: rgba(0, 0, 0, 0.356);
+.add-new-listing-container:hover {
+  background-color: rgba(0, 0, 0, 0.356);
 }
 
-.product-container{
-    height: 400px;
-    background-color: green;
-    width: 100%;
+.product-container {
+  height: 400px;
+  background-color: green;
+  width: 100%;
 }
-
- 

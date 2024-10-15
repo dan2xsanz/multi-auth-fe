@@ -52,6 +52,8 @@ type AccountDetailStore = {
   setLastName: (lastName: string | undefined) => void
   email: string | undefined
   setEmail: (email: string | undefined) => void
+  coverImg: string | undefined
+  setCoverImg: (coverImg: string | undefined) => void
   resetAccountDetailsState: () => void
 }
 
@@ -71,6 +73,8 @@ export const accountDetailStore = create<AccountDetailStore>((set) => ({
   setLastName: (lastName: string | undefined) => set({ lastName: lastName }),
   email: undefined,
   setEmail: (email: string | undefined) => set({ email: email }),
+  coverImg: undefined,
+  setCoverImg: (coverImg: string | undefined) => set({ coverImg: coverImg }),
   resetAccountDetailsState: () =>
     set({
       accountId: undefined,
