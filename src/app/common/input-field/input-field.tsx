@@ -50,7 +50,7 @@ export const CommonInputField = (props: InputFieldInterface) => {
           isError={true}
           size={TypographySizeEnum.note}
           label={`${label} field is required`}
-          style={{ marginTop: '-9px', color: 'black' }}
+          style={{ marginTop: '-5px', color: 'black' }}
         />
       )}
     </>

@@ -162,7 +162,7 @@ export const UploadProduct = (props: UploadProductProps) => {
         startSellingItems()
       } else {
         openWarningNotification({
-          description: 'Please upload images' || 'Warning occured',
+          description: 'Please upload images',
           placement: 'bottomRight',
         })
       }

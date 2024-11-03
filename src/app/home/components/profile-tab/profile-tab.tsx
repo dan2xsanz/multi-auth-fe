@@ -1,25 +1,25 @@
 'use client'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { GetProductByFilterRequest, UpdateProductRequest } from '@/app/service'
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { openErrorNotification } from '@/app/common/pop-up'
 import { accountDetailStore, useStore } from '@/app/store'
 import { ProductListInterface } from '../home-tab/data'
 import { ResponseInterface } from '@/config/config'
 import { AddIcon } from '@/app/common/icons'
 import { Image } from '@nextui-org/react'
-import {
-  GetProductByFilterRequest,
-  UpdateAccountRequest,
-  UpdateProductRequest,
-} from '@/app/service'
-import {
-  openSuccessNotification,
-  openErrorNotification,
-} from '@/app/common/pop-up'
 import './profile-tab.css'
 import {
   UploadProductInterface,
   UploadProductValues,
   UploadedProducts,
   UploadProduct,
+  EditProfile,
 } from './components'
 import {
   ProductDetailsModal,
@@ -28,14 +28,17 @@ import {
   CommonButon,
   SizeEnum,
 } from '@/index'
-import {
-  createAccountDefaultValues,
-  CreateAccountInterface,
-} from '@/app/login/components'
 
 export const ProfileTab = () => {
+  // LOADING SCREEN STORE
+  const { setIsLoading, isLoading } = useStore()
+
   // ACCOUNT DETAILS
   const accountStoreProperties = accountDetailStore()
+
+  // PRODUCT UPLOAD DETAILS
+  const [productUploadDetails, setProductUploadDetails] =
+    useState<UploadProductInterface>(UploadProductValues)
 
   // OPEN PRODUCT MODAL
   const [openAddNewProduct, setOpendAddNewProduct] = useState<boolean>(false)
@@ -49,21 +52,14 @@ export const ProfileTab = () => {
   // OPEN PRODUCT DETAIL MODAL
   const [openDetailModal, setOpenDetailModal] = useState<boolean>(false)
 
-  // PRODUCT UPLOAD DETAILS
-  const [productUploadDetails, setProductUploadDetails] =
-    useState<UploadProductInterface>(UploadProductValues)
+  // EDIT PROFILE MODAL
+  const [openEditProfile, setOpenEditProfile] = useState<boolean>(false)
 
   // REFRESH LIST HANDLER
   const [refreshList, setRefreshList] = useState<boolean>(false)
 
-  // LOADING SCREEN STORE
-  const { setIsLoading, isLoading } = useStore()
-
-  // UPLOAD IMAGE REF
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // ONCLICK START SELLING
-  const getAllProducts = async () => {
+  // REFRESH LIST OF PRODUCTS
+  const getAllProducts = useCallback(async () => {
     setIsLoading(true)
     try {
       const response: ResponseInterface = await GetProductByFilterRequest({
@@ -82,33 +78,7 @@ export const ProfileTab = () => {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // UDPATE ACCOUNT MASTER REQUEST
-  const updateAccountRequest = async (data: CreateAccountInterface) => {
-    setIsLoading(true)
-    try {
-      const response: ResponseInterface = await UpdateAccountRequest(data)
-      // RETURN SUCCESS MESSAGE
-      if (response.isSuccess && response.resultData) {
-        accountStoreProperties.setCoverImg(
-          `url(data:image/png;base64,${response.resultData.coverImg})`,
-        )
-        openSuccessNotification({
-          description: 'Updated successfully.',
-          placement: 'bottomRight',
-        })
-      }
-    } catch (error: any) {
-      // RETURN ERROR MESSAGE
-      openErrorNotification({
-        description: error.response?.data?.message || 'An error occurred',
-        placement: 'bottomRight',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [accountStoreProperties.accountId, setIsLoading])
 
   // UDPATE SPEFIC PRODUCT HANDLER
   const updateSpecificProduct = async (
@@ -134,74 +104,108 @@ export const ProfileTab = () => {
     }
   }
 
-  // UPLOAD IMAGE HANDLER
-  const uploadCoverImageHandler = (e: any) => {
-    const selectedImage = e.target.files[0]
-    const reader = new FileReader()
-    reader.onload = () => {
-      const imageData = reader.result
-      updateAccountRequest({
-        ...accountStoreProperties,
-        id: accountStoreProperties.accountId,
-        coverImg: imageData,
-      })
-    }
-    if (selectedImage) {
-      reader.readAsDataURL(selectedImage)
-    }
-    e.target.value = null
-  }
-
-  const openFileExplorerButton = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click()
-    }
-  }
-
   // REFRESH LIST EVENT HANDLER
   useEffect(() => {
     getAllProducts()
-  }, [refreshList])
+  }, [getAllProducts, refreshList])
 
-  useEffect(() => {
-    console.log(accountStoreProperties.coverImg)
-  }, [accountStoreProperties.coverImg])
+  const coverRef = useRef(null)
+  const [editPosition, setEditPosition] = useState<boolean>(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [initialMouseY, setInitialMouseY] = useState(0)
+  const [backgroundPositionY, setBackgroundPositionY] = useState(0)
+
+  const handleMouseDown = (e: any) => {
+    if (editPosition) {
+      setIsDragging(true)
+      setInitialMouseY(e.clientY)
+    }
+  }
+
+  const handleMouseMove = (e: any) => {
+    if (isDragging && editPosition) {
+      const deltaY = e.clientY - initialMouseY
+      setBackgroundPositionY((prev) => prev + deltaY)
+      setInitialMouseY(e.clientY)
+    }
+  }
+
+  const handleMouseUp = () => {
+    if (editPosition) {
+      setIsDragging(false)
+    }
+  }
 
   return (
     <div className='main-profile-container'>
       <div
-        className='main-profile-container-cover-image-name'
+        ref={coverRef}
+        className={
+          editPosition
+            ? 'main-profile-container-cover-image-name main-profile-container-cover-image-name-dragging'
+            : 'main-profile-container-cover-image-name'
+        }
         style={{
-          backgroundImage:
-            accountStoreProperties.coverImg && accountStoreProperties.coverImg
-              ? accountStoreProperties.coverImg
-              : 'none',
+          backgroundImage: accountStoreProperties.coverImg
+            ? accountStoreProperties.coverImg
+            : 'none',
+          backgroundPosition: `center ${backgroundPositionY}px`,
         }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
-        <div style={{ position: 'absolute', right: '10px', bottom: '10px' }}>
-          <input
-            type='file'
-            accept='image/*'
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            onChange={uploadCoverImageHandler}
-          />
-          <CommonButon
-            size={SizeEnum.small}
-            type={ButtonTypeEnum.submit}
-            buttonTxt={'Change cover'}
-            onClick={openFileExplorerButton}
-            buttonColorType={ButtonColorTypeEnum.primary}
-          />
+        <div
+          style={{
+            display: 'flex',
+            position: 'absolute',
+            right: '10px',
+            bottom: '10px',
+            gap: '5px',
+          }}
+        >
+          {!editPosition && (
+            <Fragment>
+              <CommonButon
+                size={SizeEnum.small}
+                buttonTxt={'Reposition'}
+                type={ButtonTypeEnum.submit}
+                onClick={() => setEditPosition(true)}
+              />
+              <CommonButon
+                size={SizeEnum.small}
+                buttonTxt={'Edit Profile'}
+                type={ButtonTypeEnum.submit}
+                onClick={() => setOpenEditProfile(true)}
+                buttonColorType={ButtonColorTypeEnum.primary}
+              />
+            </Fragment>
+          )}
+          {editPosition && (
+            <CommonButon
+              size={SizeEnum.small}
+              buttonTxt={'Save'}
+              type={ButtonTypeEnum.submit}
+              onClick={() => setEditPosition(false)}
+              buttonColorType={ButtonColorTypeEnum.primary}
+            />
+          )}
         </div>
       </div>
 
       <div className='main-profile-image-details-container'>
         <div className='main-profile-image-container'>
           <Image
+            isZoomed
             radius='full'
-            alt='NextUI hero Image with delay'
-            src='https://scontent.fceb3-1.fna.fbcdn.net/v/t39.30808-1/457217448_871617531509700_685530745967946158_n.jpg?stp=dst-jpg_s200x200&_nc_cat=103&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeHWUsDP6InZa_BBMedUz16_z8HNuW8dGtPPwc25bx0a0-5djabfCPzUwGIhkCrz_LpZCpwnAJXMPPzloOsb_-L0&_nc_ohc=sDmOeuUqnrEQ7kNvgHrtoHs&_nc_ht=scontent.fceb3-1.fna&_nc_gid=A9NQrs8mecCcENty-6cwofM&oh=00_AYDscQtQIbl0CeYjc2mRbVzfSQ8XBAxwMAD96KGKUVbOzA&oe=6712CB62'
+            alt='NextUI Fruit Image with Zoom'
+            src={
+              accountStoreProperties.profileImg
+                ? accountStoreProperties.profileImg
+                : ''
+            }
+            style={{ height: '150px', width: '150px' }}
           />
         </div>
         <div className='main-profile-name-membership'>
@@ -211,7 +215,7 @@ export const ProfileTab = () => {
           </div>
         </div>
       </div>
-      {productList?.length ? (
+      {productList?.length && (
         <div className='selling-title-container'>
           <div>Selling Products</div>
           <CommonButon
@@ -222,8 +226,6 @@ export const ProfileTab = () => {
             buttonColorType={ButtonColorTypeEnum.primary}
           />
         </div>
-      ) : (
-        <></>
       )}
       <div className='listing-container'>
         {!productList?.length && !isLoading && (
@@ -272,6 +274,12 @@ export const ProfileTab = () => {
           openDetailModal={openDetailModal}
           productMasterId={productDetails.id}
           setOpenDetailModal={setOpenDetailModal}
+        />
+      )}
+      {openEditProfile && (
+        <EditProfile
+          openEditProfile={openEditProfile}
+          setOpenEditProfile={setOpenEditProfile}
         />
       )}
     </div>
