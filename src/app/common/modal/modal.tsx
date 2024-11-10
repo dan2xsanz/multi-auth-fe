@@ -30,8 +30,6 @@ export const CommonModal = (props: CommonModalInterface) => {
     onCancelText,
     isShowFooterButtons = true,
   } = props
-  
-  const [cancel, setCancel]= useState<boolean>(false)
 
   return (
     <Modal

@@ -7,16 +7,18 @@
 }
 
 .main-profile-container-cover-image-name {
-    height: 200px;
-    display: flex;
-    justify-content: flex-end;
-    background-color: rgb(125, 131, 125);
-    border-bottom-color: rgba(0, 0, 0, 0.085);
-    position: relative; /* Add this to enable positioning of children */
-     background-size: cover; /* Ensures the image covers the entire div */
-    background-position: center; /* Centers the image */
-    background-repeat: no-repeat; /* Prevents repeating the image */
-  
+  height: 300px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgb(125, 131, 125);
+  border-bottom-color: rgba(0, 0, 0, 0.085);
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.main-profile-container-cover-image-name-dragging {
+  cursor: move;
 }
 
 .main-profile-image-details-container {

@@ -137,27 +137,27 @@ export const SignUpAccount = (props: CreateAccountModalInterface) => {
         </div>
       </div>
       <CommonInputField
-        key={'fName'}
-        type={'fName'}
+        key={'firstName'}
+        type={'firstName'}
         required={true}
         label={'First Name'}
         size={SizeEnum.small}
-        value={accountDetails.fName}
-        isError={errorFields.includes('fName')}
+        value={accountDetails.firstName}
+        isError={errorFields.includes('firstName')}
         onChange={(data) => {
-          onChangeFields({ ...accountDetails, fName: data.target.value })
+          onChangeFields({ ...accountDetails, firstName: data.target.value })
         }}
       />
       <CommonInputField
-        key={'lName'}
-        type={'lName'}
+        key={'lastName'}
+        type={'lastName'}
         required={true}
         label={'Last Name'}
         size={SizeEnum.small}
-        value={accountDetails.lName}
-        isError={errorFields.includes('lName')}
+        value={accountDetails.lastName}
+        isError={errorFields.includes('lastName')}
         onChange={(data) => {
-          onChangeFields({ ...accountDetails, lName: data.target.value })
+          onChangeFields({ ...accountDetails, lastName: data.target.value })
         }}
       />
       <CommonInputField

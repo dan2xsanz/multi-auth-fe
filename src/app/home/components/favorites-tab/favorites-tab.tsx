@@ -26,7 +26,7 @@ export const FavoritesTab = () => {
   useEffect(() => {
     setOpenDetailModal(true)
     getAllFavoriteProducts(accountId, setIsLoading, setProductList)
-  }, [productDetails])
+  }, [accountId, productDetails, setIsLoading])
 
   return (
     <div className='main-profile-container'>
