@@ -77,13 +77,12 @@ export default function HomePage() {
       <CommonDrawer
         openDrawer={openNotification}
         setOpenDrawer={setOpenNotification}
-        children={<NotificationTab />}
-      />
-      <CommonDrawer
-        openDrawer={openMessages}
-        setOpenDrawer={setOpenMessages}
-        children={<MessagesTab />}
-      />
+      >
+        <NotificationTab />
+      </CommonDrawer>
+      <CommonDrawer openDrawer={openMessages} setOpenDrawer={setOpenMessages}>
+        <MessagesTab />
+      </CommonDrawer>
     </Fragment>
   )
 }

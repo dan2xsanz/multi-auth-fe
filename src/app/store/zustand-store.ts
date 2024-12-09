@@ -20,9 +20,31 @@ type LogInStore = {
   resetLoginState: () => void
 }
 
+// const loadInitialLoginState = (): Partial<LogInStore> => {
+//   const storedState = localStorage.getItem('logInStore')
+//   return storedState ? JSON.parse(storedState) : {}
+// }
+
+// export const logInStore = create<LogInStore>()((set) => ({
+//   isLogIn: false,
+//   setIsLogIn: (login) => set({ isLogIn: login }),
+//   resetLoginState: () =>
+//     set({
+//       isLogIn: false,
+//     }),
+// }))
+
+// logInStore.subscribe((state) => {
+//   localStorage.setItem('logInStore', JSON.stringify(state))
+// })
+
+// logInStore.setState(loadInitialLoginState())
 const loadInitialLoginState = (): Partial<LogInStore> => {
-  const storedState = localStorage.getItem('logInStore')
-  return storedState ? JSON.parse(storedState) : {}
+  if (typeof window !== 'undefined') {
+    const storedState = localStorage.getItem('logInStore')
+    return storedState ? JSON.parse(storedState) : {}
+  }
+  return {} // return empty object on the server
 }
 
 export const logInStore = create<LogInStore>()((set) => ({
@@ -34,11 +56,17 @@ export const logInStore = create<LogInStore>()((set) => ({
     }),
 }))
 
-logInStore.subscribe((state) => {
-  localStorage.setItem('logInStore', JSON.stringify(state))
-})
+// Subscribe to store and update localStorage (only in client-side)
+if (typeof window !== 'undefined') {
+  logInStore.subscribe((state) => {
+    localStorage.setItem('logInStore', JSON.stringify(state))
+  })
+}
 
-logInStore.setState(loadInitialLoginState())
+// Initialize store state (only in client-side)
+if (typeof window !== 'undefined') {
+  logInStore.setState(loadInitialLoginState())
+}
 
 /**
  * ACCOUNT DETAIL STORE
@@ -59,9 +87,47 @@ type AccountDetailStore = {
   resetAccountDetailsState: () => void
 }
 
+// const loadInitialState = (): Partial<AccountDetailStore> => {
+//   const storedState = localStorage.getItem('accountDetailStore')
+//   return storedState ? JSON.parse(storedState) : {}
+// }
+
+// export const accountDetailStore = create<AccountDetailStore>((set) => ({
+//   accountId: undefined,
+//   setAccountId: (accountId: number | undefined) =>
+//     set({ accountId: accountId }),
+//   firstName: undefined,
+//   setFirstName: (firstName: string | undefined) =>
+//     set({ firstName: firstName }),
+//   lastName: undefined,
+//   setLastName: (lastName: string | undefined) => set({ lastName: lastName }),
+//   email: undefined,
+//   setEmail: (email: string | undefined) => set({ email: email }),
+//   coverImg: undefined,
+//   setCoverImg: (coverImg: string | undefined) => set({ coverImg: coverImg }),
+//   profileImg: undefined,
+//   setProfileImg: (profileImg: string | undefined) =>
+//     set({ profileImg: profileImg }),
+//   resetAccountDetailsState: () =>
+//     set({
+//       accountId: undefined,
+//       firstName: undefined,
+//       lastName: undefined,
+//       email: undefined,
+//     }),
+// }))
+
+// accountDetailStore.subscribe((state) => {
+//   localStorage.setItem('accountDetailStore', JSON.stringify(state))
+// })
+
+// accountDetailStore.setState(loadInitialState())
 const loadInitialState = (): Partial<AccountDetailStore> => {
-  const storedState = localStorage.getItem('accountDetailStore')
-  return storedState ? JSON.parse(storedState) : {}
+  if (typeof window !== 'undefined') {
+    const storedState = localStorage.getItem('accountDetailStore')
+    return storedState ? JSON.parse(storedState) : {}
+  }
+  return {} // return empty object on the server
 }
 
 export const accountDetailStore = create<AccountDetailStore>((set) => ({
@@ -89,8 +155,14 @@ export const accountDetailStore = create<AccountDetailStore>((set) => ({
     }),
 }))
 
-accountDetailStore.subscribe((state) => {
-  localStorage.setItem('accountDetailStore', JSON.stringify(state))
-})
+// Subscribe to store and update localStorage (only in client-side)
+if (typeof window !== 'undefined') {
+  accountDetailStore.subscribe((state) => {
+    localStorage.setItem('accountDetailStore', JSON.stringify(state))
+  })
+}
 
-accountDetailStore.setState(loadInitialState())
+// Initialize store state (only in client-side)
+if (typeof window !== 'undefined') {
+  accountDetailStore.setState(loadInitialState())
+}
