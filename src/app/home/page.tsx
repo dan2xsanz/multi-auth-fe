@@ -1,7 +1,7 @@
 'use client'
 import websocketService from '../service/web-socket-service/web-socket-service'
 import React, { Fragment, useEffect, useState } from 'react'
-import { accountDetailStore } from '../store'
+import { accountDetailStore, logInStore } from '../store'
 import { useRouter } from 'next/navigation'
 import {
   NotificationTab,
@@ -16,6 +16,8 @@ import { MessagesTab } from './components/messages-tab/messages-tab'
 export default function HomePage() {
   // ACOUNT MASTER DETAILS
   const { firstName, lastName, accountId } = accountDetailStore()
+
+  const { token } = logInStore()
 
   // HEADER BUTTON TAGS
   const [headerButton, setHeaderButton] = useState<number>(1)
@@ -37,6 +39,12 @@ export default function HomePage() {
   useEffect(() => {
     websocketService.setCurrentLoggedInUser(accountId)
   }, [accountId, headerButton])
+
+  useEffect(() => {
+    if (!token) {
+      onClickLogoutHandler()
+    }
+  }, [token])
 
   return (
     <Fragment>

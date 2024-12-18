@@ -37,7 +37,7 @@ export default function LoginPage() {
   } = accountDetailStore()
 
   const { setIsLoading } = useStore()
-  const { resetLoginState, setIsLogIn } = logInStore()
+  const { resetLoginState, setIsLogIn, setRefreshToken, setToken } = logInStore()
 
   const { resetAccountDetailsState } = accountDetailStore()
 
@@ -114,7 +114,10 @@ export default function LoginPage() {
             onSetAccountDetails(response)
             // REDIRECT TO HOME
             router.push('/home')
+            // SET AUTH PROPERTIES
             setIsLogIn(true)
+            setToken(response.resultData?.token)
+            setRefreshToken(response.resultData?.refreshToken)
             onChangeFields(loginDefaultValue)
           }
         })

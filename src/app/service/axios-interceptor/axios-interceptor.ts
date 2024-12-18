@@ -1,13 +1,22 @@
-import { REQUEST_URL } from '@/properties'
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 
 // REQUEST INTERCEPTOR
 axios.interceptors.request.use(
   function (request) {
+    // Only add the Bearer token if 'logInStore' exists in localStorage
+    const storedState = localStorage.getItem('logInStore')
+
+    if (storedState && !request.url?.includes('auth')) {
+      // Parse the stored state and extract the token
+      const parsedState = JSON.parse(storedState)
+      if (parsedState.token) {
+        request.headers['Authorization'] = `Bearer ${parsedState.token}`
+      }
+    }
+
     return request
   },
   function (error) {
-    console.log('REQUEST' + error)
     return Promise.reject(error)
   },
 )
@@ -18,7 +27,6 @@ axios.interceptors.response.use(
     return response
   },
   function (error) {
-    console.log('RESPONSE' + error)
     return Promise.reject(error)
   },
 )

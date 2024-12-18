@@ -15,30 +15,15 @@ export const useStore = create<Store>()((set) => ({
  * LOGIN STORE
  */
 type LogInStore = {
+  token: string
   isLogIn: boolean
+  refreshToken: string
+  setToken: (data: string) => void
   setIsLogIn: (data: boolean) => void
+  setRefreshToken: (data: string) => void
   resetLoginState: () => void
 }
 
-// const loadInitialLoginState = (): Partial<LogInStore> => {
-//   const storedState = localStorage.getItem('logInStore')
-//   return storedState ? JSON.parse(storedState) : {}
-// }
-
-// export const logInStore = create<LogInStore>()((set) => ({
-//   isLogIn: false,
-//   setIsLogIn: (login) => set({ isLogIn: login }),
-//   resetLoginState: () =>
-//     set({
-//       isLogIn: false,
-//     }),
-// }))
-
-// logInStore.subscribe((state) => {
-//   localStorage.setItem('logInStore', JSON.stringify(state))
-// })
-
-// logInStore.setState(loadInitialLoginState())
 const loadInitialLoginState = (): Partial<LogInStore> => {
   if (typeof window !== 'undefined') {
     const storedState = localStorage.getItem('logInStore')
@@ -49,10 +34,16 @@ const loadInitialLoginState = (): Partial<LogInStore> => {
 
 export const logInStore = create<LogInStore>()((set) => ({
   isLogIn: false,
+  token: '',
+  refreshToken: '',
+  setToken: (token) => set({ token: token }),
+  setRefreshToken: (refreshToken) => set({ refreshToken: refreshToken }),
   setIsLogIn: (login) => set({ isLogIn: login }),
   resetLoginState: () =>
     set({
       isLogIn: false,
+      token: '',
+      refreshToken: '',
     }),
 }))
 
@@ -87,41 +78,6 @@ type AccountDetailStore = {
   resetAccountDetailsState: () => void
 }
 
-// const loadInitialState = (): Partial<AccountDetailStore> => {
-//   const storedState = localStorage.getItem('accountDetailStore')
-//   return storedState ? JSON.parse(storedState) : {}
-// }
-
-// export const accountDetailStore = create<AccountDetailStore>((set) => ({
-//   accountId: undefined,
-//   setAccountId: (accountId: number | undefined) =>
-//     set({ accountId: accountId }),
-//   firstName: undefined,
-//   setFirstName: (firstName: string | undefined) =>
-//     set({ firstName: firstName }),
-//   lastName: undefined,
-//   setLastName: (lastName: string | undefined) => set({ lastName: lastName }),
-//   email: undefined,
-//   setEmail: (email: string | undefined) => set({ email: email }),
-//   coverImg: undefined,
-//   setCoverImg: (coverImg: string | undefined) => set({ coverImg: coverImg }),
-//   profileImg: undefined,
-//   setProfileImg: (profileImg: string | undefined) =>
-//     set({ profileImg: profileImg }),
-//   resetAccountDetailsState: () =>
-//     set({
-//       accountId: undefined,
-//       firstName: undefined,
-//       lastName: undefined,
-//       email: undefined,
-//     }),
-// }))
-
-// accountDetailStore.subscribe((state) => {
-//   localStorage.setItem('accountDetailStore', JSON.stringify(state))
-// })
-
-// accountDetailStore.setState(loadInitialState())
 const loadInitialState = (): Partial<AccountDetailStore> => {
   if (typeof window !== 'undefined') {
     const storedState = localStorage.getItem('accountDetailStore')
